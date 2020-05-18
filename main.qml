@@ -64,6 +64,14 @@ Window {
                             font.bold: true
                         }
 
+                        CheckBox {
+                            id: selectFolderCheckBox
+
+                            checked: false
+                            text: qsTr("Select Folder")
+                            font.pointSize: 12
+                        }
+
                         RowLayout {
                             Layout.fillWidth: true
 
@@ -322,6 +330,7 @@ Window {
         image.source = "";
         results.clear();
         results.log("documentDialog.open");
+        documentDialog.selectFolder = selectFolderCheckBox.checked;
         documentDialog.open();
     }
 

@@ -3,7 +3,8 @@
 Q_LOGGING_CATEGORY(documentDialog, "stephenquan.DocumentDialog")
 
 DocumentDialogPrivate::DocumentDialogPrivate(QObject* parent) :
-    QObject(parent)
+    QObject(parent),
+    m_SelectFolder(false)
 {
 }
 
@@ -26,4 +27,18 @@ void DocumentDialogPrivate::setFileUrl(const QVariant& fileUrl)
     m_FileUrl = fileUrl;
 
     emit fileUrlChanged();
+}
+
+void DocumentDialogPrivate::setSelectFolder(bool selectFolder)
+{
+    if (selectFolder == m_SelectFolder)
+    {
+        return;
+    }
+
+    m_SelectFolder = selectFolder;
+
+    qCDebug(documentDialog, "selectFolder %s", selectFolder ? "true" : "false");
+
+    emit selectFolderChanged();
 }

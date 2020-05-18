@@ -27,15 +27,24 @@ void DocumentDialogPrivateAndroid::open()
     QAndroidJniObject ACTION_OPEN_DOCUMENT = QAndroidJniObject::getStaticObjectField("android/content/Intent", "ACTION_OPEN_DOCUMENT", "Ljava/lang/String;");
     qCInfo(documentDialog, "ACTION_OPEN_DOCUMENT = %s", ACTION_OPEN_DOCUMENT.toString().toUtf8().constData());
 
+    QAndroidJniObject ACTION_OPEN_DOCUMENT_TREE = QAndroidJniObject::getStaticObjectField("android/content/Intent", "ACTION_OPEN_DOCUMENT_TREE", "Ljava/lang/String;");
+    qCInfo(documentDialog, "ACTION_OPEN_DOCUMENT_TREE = %s", ACTION_OPEN_DOCUMENT_TREE.toString().toUtf8().constData());
+
     QAndroidJniObject CATEGORY_OPENABLE = QAndroidJniObject::getStaticObjectField("android/content/Intent", "CATEGORY_OPENABLE", "Ljava/lang/String;");
     qCInfo(documentDialog, "CATEGORY_OPENABLE = %s", CATEGORY_OPENABLE.toString().toUtf8().constData());
 
-    QAndroidJniObject mimeType = QAndroidJniObject::fromString(QStringLiteral( "*/*"));
-
     QAndroidJniObject intent = QAndroidJniObject("android/content/Intent");
-    intent.callObjectMethod("setAction", "(Ljava/lang/String;)Landroid/content/Intent;", ACTION_OPEN_DOCUMENT.object<jstring>());
-    intent.callObjectMethod("addCategory", "(Ljava/lang/String;)Landroid/content/Intent;", CATEGORY_OPENABLE.object<jstring>());
-    intent.callObjectMethod("setType", "(Ljava/lang/String;)Landroid/content/Intent;", mimeType.object<jstring>());
+    if (selectFolder())
+    {
+        intent.callObjectMethod("setAction", "(Ljava/lang/String;)Landroid/content/Intent;", ACTION_OPEN_DOCUMENT_TREE.object<jstring>());
+    }
+    else
+    {
+        QAndroidJniObject mimeType = QAndroidJniObject::fromString(QStringLiteral( "*/*"));
+        intent.callObjectMethod("setAction", "(Ljava/lang/String;)Landroid/content/Intent;", ACTION_OPEN_DOCUMENT.object<jstring>());
+        intent.callObjectMethod("addCategory", "(Ljava/lang/String;)Landroid/content/Intent;", CATEGORY_OPENABLE.object<jstring>());
+        intent.callObjectMethod("setType", "(Ljava/lang/String;)Landroid/content/Intent;", mimeType.object<jstring>());
+    }
     QtAndroid::startActivity(intent.object<jobject>(), DOCUMENT_DIALOG_REQUEST_CODE, this);
 }
 

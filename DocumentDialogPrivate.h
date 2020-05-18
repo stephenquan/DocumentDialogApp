@@ -13,6 +13,7 @@ class DocumentDialogPrivate : public QObject
     Q_OBJECT
 
     Q_PROPERTY(QVariant fileUrl READ fileUrl NOTIFY fileUrlChanged)
+    Q_PROPERTY(bool selectFolder READ selectFolder WRITE setSelectFolder NOTIFY selectFolderChanged)
 
 public:
     DocumentDialogPrivate(QObject* parent = nullptr);
@@ -21,16 +22,19 @@ public:
 
     QVariant fileUrl() const { return m_FileUrl; }
     void setFileUrl(const QVariant& fileUrl);
+    bool selectFolder() const { return m_SelectFolder; }
+    void setSelectFolder(bool selectFolder);
 
 signals:
     void fileUrlChanged();
+    void selectFolderChanged();
 
     void rejected();
     void accepted();
 
 protected:
     QVariant m_FileUrl;
-
+    bool m_SelectFolder;
 
 };
 

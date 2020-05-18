@@ -16,6 +16,7 @@ DocumentDialog::DocumentDialog(QObject* parent) :
 #endif
 {
     connect(m_DocumentDialogPrivate, &DocumentDialogPrivate::fileUrlChanged, this, &DocumentDialog::fileUrlChanged);
+    connect(m_DocumentDialogPrivate, &DocumentDialogPrivate::selectFolderChanged, this, &DocumentDialog::selectFolderChanged);
     connect(m_DocumentDialogPrivate, &DocumentDialogPrivate::accepted, this, &DocumentDialog::accepted);
     connect(m_DocumentDialogPrivate, &DocumentDialogPrivate::rejected, this, &DocumentDialog::rejected);
 }
@@ -23,6 +24,7 @@ DocumentDialog::DocumentDialog(QObject* parent) :
 DocumentDialog::~DocumentDialog()
 {
     disconnect(m_DocumentDialogPrivate, &DocumentDialogPrivate::fileUrlChanged, this, &DocumentDialog::fileUrlChanged);
+    disconnect(m_DocumentDialogPrivate, &DocumentDialogPrivate::selectFolderChanged, this, &DocumentDialog::selectFolderChanged);
     disconnect(m_DocumentDialogPrivate, &DocumentDialogPrivate::accepted, this, &DocumentDialog::accepted);
     disconnect(m_DocumentDialogPrivate, &DocumentDialogPrivate::rejected, this, &DocumentDialog::rejected);
     delete m_DocumentDialogPrivate;
@@ -32,6 +34,16 @@ DocumentDialog::~DocumentDialog()
 QVariant DocumentDialog::fileUrl() const
 {
     return m_DocumentDialogPrivate->fileUrl();
+}
+
+bool DocumentDialog::selectFolder() const
+{
+    return m_DocumentDialogPrivate->selectFolder();
+}
+
+void DocumentDialog::setSelectFolder(bool selectFolder)
+{
+    m_DocumentDialogPrivate->setSelectFolder(selectFolder);
 }
 
 void DocumentDialog::open()

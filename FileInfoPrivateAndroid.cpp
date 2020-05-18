@@ -142,5 +142,6 @@ QVariant FileInfoPrivateAndroid::extra() const
     map["ContentResolver.MIME_TYPE"] = contentResolver.query(url().toString(), "MIME_TYPE");
     map["ContentResolver.DISPLAY_NAME"] = contentResolver.query(url().toString(), "DISPLAY_NAME");
     map["DocumentsContract.documentId"] = documentsContract.getDocumentId(url().toString());
+    map["DocumentsContract.treeDocumentId"] = documentsContract.getTreeDocumentId(url().toString());
     return map;
 }
