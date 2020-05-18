@@ -41,6 +41,11 @@ QString FileInfo::baseName() const
     return m_FileInfoPrivate->baseName();
 }
 
+QString FileInfo::displayName() const
+{
+    return m_FileInfoPrivate->displayName();
+}
+
 bool FileInfo::exists() const
 {
     return m_FileInfoPrivate->exists();
@@ -88,4 +93,9 @@ QVariant FileInfo::dataUri() const
     qDebug() << Q_FUNC_INFO << "bytes.length: " << bytes.length();
 
     return QStringLiteral("data:application/octet-stream;base64,") + bytes.toBase64();
+}
+
+QVariant FileInfo::extra() const
+{
+    return m_FileInfoPrivate->extra();
 }

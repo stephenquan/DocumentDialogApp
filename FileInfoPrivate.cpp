@@ -22,6 +22,11 @@ QString FileInfoPrivate::baseName() const
     return fileInfo().baseName();
 }
 
+QString FileInfoPrivate::displayName() const
+{
+    return fileInfo().fileName();
+}
+
 bool FileInfoPrivate::exists() const
 {
     return fileInfo().exists();
@@ -103,4 +108,9 @@ QFileInfo FileInfoPrivate::fileInfo(const QUrl& fileUrl)
 QFileInfo FileInfoPrivate::fileInfo(const QString& filePath)
 {
     return QFileInfo(filePath);
+}
+
+QVariant FileInfoPrivate::extra() const
+{
+    return QVariant();
 }

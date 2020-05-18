@@ -24,7 +24,8 @@ HEADERS += \
     DocumentDialog.h \
     DocumentDialogPrivate.h \
     FileInfo.h \
-    FileInfoPrivate.h
+    FileInfoPrivate.h \ \
+    JniExceptionCheck.h
 
 android: {
     QT += androidextras
@@ -32,13 +33,16 @@ android: {
     SOURCES += \
         DocumentDialogPrivateAndroid.cpp \
         FileInfoPrivateAndroid.cpp \
-        ContentResolver.cpp
+        ContentResolver.cpp \
+        DocumentsContract.cpp \
+        InputStream.cpp
 
     HEADERS += \
-        JniEnvironment.h \
         DocumentDialogPrivateAndroid.h \
         FileInfoPrivateAndroid.h \
-        ContentResolver.h
+        ContentResolver.h \
+        DocumentsContract.h \
+        InputStream.h
 }
 
 RESOURCES += qml.qrc

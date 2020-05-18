@@ -141,6 +141,13 @@ Window {
 
                         Text {
                             Layout.fillWidth: true
+                            text: qsTr("displayName: %1").arg(JSON.stringify(fileInfo.displayName))
+                            font.pointSize: 10
+                            wrapMode: Text.WrapAtWordBoundaryOrAnywhere
+                        }
+
+                        Text {
+                            Layout.fillWidth: true
                             text: qsTr("fileName: %1").arg(JSON.stringify(fileInfo.fileName))
                             font.pointSize: 10
                             wrapMode: Text.WrapAtWordBoundaryOrAnywhere
@@ -157,6 +164,13 @@ Window {
                         Text {
                             Layout.fillWidth: true
                             text: qsTr("url: %1").arg(JSON.stringify(fileInfo.url))
+                            font.pointSize: 10
+                            wrapMode: Text.WrapAtWordBoundaryOrAnywhere
+                        }
+
+                        Text {
+                            Layout.fillWidth: true
+                            text: qsTr("extra: %1").arg(fileInfo.url ? JSON.stringify(fileInfo.extra, undefined, 2) : null)
                             font.pointSize: 10
                             wrapMode: Text.WrapAtWordBoundaryOrAnywhere
                         }

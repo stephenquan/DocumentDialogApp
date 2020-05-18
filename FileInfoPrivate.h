@@ -17,10 +17,12 @@ public:
     virtual QString absoluteFilePath() const;
     virtual QString baseName() const;
     virtual bool exists() const;
+    virtual QString displayName() const;
     virtual QString fileName() const;
     virtual QString filePath() const;
     virtual QByteArray readAll() const;
     virtual qint64 size() const;
+    virtual QVariant extra() const;
 
     virtual QVariant url() const { return m_Url; }
     virtual void setUrl(const QVariant& url);
