@@ -5,7 +5,6 @@
 #ifdef Q_OS_ANDROID
 #include "FileInfoPrivateAndroid.h"
 #endif
-#include <QDebug>
 
 FileInfo::FileInfo(QObject* parent) :
     QObject(parent)
@@ -78,9 +77,7 @@ QByteArray FileInfo::readAll() const
 
 void FileInfo::setUrl(const QVariant& url)
 {
-    qDebug() << Q_FUNC_INFO << __LINE__ << "url: " << url;
     m_FileInfoPrivate->setUrl(url);
-    qDebug() << Q_FUNC_INFO << __LINE__ << "url: " << FileInfo::url();
 }
 
 QVariant FileInfo::dataUri() const
@@ -90,7 +87,6 @@ QVariant FileInfo::dataUri() const
     {
         return QVariant();
     }
-    qDebug() << Q_FUNC_INFO << "bytes.length: " << bytes.length();
 
     return QStringLiteral("data:application/octet-stream;base64,") + bytes.toBase64();
 }

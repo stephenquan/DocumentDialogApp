@@ -3,7 +3,6 @@
 #include "ContentResolver.h"
 #include "DocumentsContract.h"
 #include "JniExceptionCheck.h"
-#include <QDebug>
 
 FileInfoPrivateAndroid::FileInfoPrivateAndroid(QObject* parent) :
     FileInfoPrivate(parent)
@@ -98,8 +97,6 @@ void FileInfoPrivateAndroid::setUrl(const QVariant& url)
 {
     QString _url = url.toString();
 
-    qDebug() << Q_FUNC_INFO << __LINE__ << "url: " << url;
-
     QAndroidJniEnvironment env;
     JniExceptionCheck check(env);
 
@@ -108,22 +105,17 @@ void FileInfoPrivateAndroid::setUrl(const QVariant& url)
     /*
     DocumentsContract documentsContract(env);
     QString documentId = documentsContract.getDocumentId(_url);
-    qDebug() << Q_FUNC_INFO << __LINE__ << "documentId: " << documentId;
     if (!documentId.isEmpty() && !documentId.isNull())
     {
-        qDebug() << Q_FUNC_INFO << __LINE__;
         if (documentId.startsWith("raw:"))
         {
-            qDebug() << Q_FUNC_INFO << __LINE__;
             FileInfoPrivate::setUrl(documentId.remove(0, 4));
             return;
         }
 
-        qDebug() << Q_FUNC_INFO << __LINE__;
         QRegExp re("^\\d*$");
         if (re.exactMatch(_url))
         {
-            qDebug() << Q_FUNC_INFO << __LINE__;
             _url = QString("content://downloads/public_documents/") + documentId;
         }
     }
@@ -131,7 +123,6 @@ void FileInfoPrivateAndroid::setUrl(const QVariant& url)
 
     ContentResolver contentResolver(env);
     QVariant data = contentResolver.query(_url, QStringLiteral("DATA"));
-    qDebug() << Q_FUNC_INFO << __LINE__ << "data: " << data;
     if (data.isValid() && !data.isNull() && !data.toString().isEmpty())
     {
         _url = data.toString();
@@ -142,29 +133,14 @@ void FileInfoPrivateAndroid::setUrl(const QVariant& url)
 
 QVariant FileInfoPrivateAndroid::extra() const
 {
-    qDebug() << Q_FUNC_INFO << __LINE__;
-    //return QVariant(); // QString("123");
-#ifndef ABC
     QAndroidJniEnvironment env;
-    qDebug() << Q_FUNC_INFO << __LINE__;
-    //JniExceptionCheck check(env);
-    qDebug() << Q_FUNC_INFO << __LINE__;
     if (!isContentUri()) return FileInfoPrivate::extra();
-    qDebug() << Q_FUNC_INFO << __LINE__;
     QVariantMap map;
-    qDebug() << Q_FUNC_INFO << __LINE__;
     ContentResolver contentResolver(env);
-    qDebug() << Q_FUNC_INFO << __LINE__;
     DocumentsContract documentsContract(env);
-    qDebug() << Q_FUNC_INFO << __LINE__;
     map["ContentResolver.SIZE"] = contentResolver.query(url().toString(), "SIZE");
-    qDebug() << Q_FUNC_INFO << __LINE__;
     map["ContentResolver.MIME_TYPE"] = contentResolver.query(url().toString(), "MIME_TYPE");
-    qDebug() << Q_FUNC_INFO << __LINE__;
     map["ContentResolver.DISPLAY_NAME"] = contentResolver.query(url().toString(), "DISPLAY_NAME");
-    qDebug() << Q_FUNC_INFO << __LINE__;
     map["DocumentsContract.documentId"] = documentsContract.getDocumentId(url().toString());
-    qDebug() << Q_FUNC_INFO << __LINE__ << "map: " << map;
     return map;
-#endif
 }

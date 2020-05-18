@@ -15,6 +15,7 @@ public:
     ~DocumentsContract();
 
     QString getDocumentId(const QString& uri);
+    QString getTreeDocumentId(const QString& uri);
 
 protected:
     QAndroidJniEnvironment& m_Env;

@@ -27,21 +27,8 @@ DocumentsContract::~DocumentsContract()
 //
 //----------------------------------------------------------------------
 
-/*
-bool DocumentsContract::isContentUri(const QString& uri)
-{
-    return uri.startsWith("content://");
-}
-*/
-
-//----------------------------------------------------------------------
-//
-//----------------------------------------------------------------------
-
 QString DocumentsContract::getDocumentId(const QString& uri)
 {
-    qDebug() << Q_FUNC_INFO << __LINE__ << "uri: " << uri;
-
     JniExceptionCheck check(m_Env);
 
     QAndroidJniObject urlString = QAndroidJniObject::fromString( uri );
@@ -51,7 +38,6 @@ QString DocumentsContract::getDocumentId(const QString& uri)
                 "parse",
                 "(Ljava/lang/String;)Landroid/net/Uri;",
                 urlString.object< jstring >() );
-    qDebug() << Q_FUNC_INFO << __LINE__ << "_uri.isValid: " << _uri.isValid();
     if ( !_uri.isValid() )
     {
         return QString();
@@ -62,8 +48,6 @@ QString DocumentsContract::getDocumentId(const QString& uri)
                 "getDocumentId",
                 "(Landroid/net/Uri;)Ljava/lang/String;",
                 _uri.object());
-    qDebug() << Q_FUNC_INFO << __LINE__ << "documentId.isValid: " << documentId.isValid();
-    qDebug() << Q_FUNC_INFO << __LINE__ << "documentId.toString: " << documentId.toString();
     if ( !documentId.isValid() )
     {
         return QString();
