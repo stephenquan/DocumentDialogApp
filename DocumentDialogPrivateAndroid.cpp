@@ -84,6 +84,7 @@ void DocumentDialogPrivateAndroid::handleActivityResult(int receiverRequestCode,
     QAndroidJniObject uri = data.callObjectMethod("getData", "()Landroid/net/Uri;" );
     qCInfo(documentDialog, "uri = %s", uri.toString().toUtf8().constData());
 
+    /*
     QUrl fileUrl = uri.toString();
     qCInfo(documentDialog, "fileUrl = %s", fileUrl.toString().toUtf8().constData());
 
@@ -95,8 +96,9 @@ void DocumentDialogPrivateAndroid::handleActivityResult(int receiverRequestCode,
     qCInfo(documentDialog, "flags (after) = %d", flags);
 
     QAndroidJniObject contentResolver = QtAndroid::androidActivity().callObjectMethod("getContentResolver","()Landroid/content/ContentResolver;");
-    contentResolver.callMethod<void>("takePersistableUriPermission","(Landroid/net/Uri;I)V", uri.object<jobject>(), flags);
     qCInfo(documentDialog, "contentResolver.isValid = %d", contentResolver.isValid());
+    contentResolver.callMethod<void>("takePersistableUriPermission","(Landroid/net/Uri;I)V", uri.object<jobject>(), flags);
+    */
 
     //setFileUrl(fileUrl);
     setFileUrl(uri.toString());

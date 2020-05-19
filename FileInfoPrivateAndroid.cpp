@@ -185,6 +185,6 @@ QVariant FileInfoPrivateAndroid::extra() const
         }
     }
 
-    map["Version"] = 1004;
+    map["Version"] = 20200519;
     return map;
 }
