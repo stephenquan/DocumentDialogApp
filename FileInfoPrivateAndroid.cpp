@@ -166,9 +166,22 @@ QVariant FileInfoPrivateAndroid::extra() const
         QString childDocumentsUri = documentsContract.buildChildDocumentsUriUsingTree(_uri, treeDocumentId);
         map["childDocumentsUri"] = childDocumentsUri;
 
-        if (!childDocumentsUri.isEmpty() && !childDocumentsUri.isNull())
+        QStringList childDocumentIds = contentResolver.query(childDocumentsUri,  "android/provider/DocumentsContract$Document", "COLUMN_DOCUMENT_ID");
+        if (childDocumentIds.length() > 0)
         {
-            map["childDocuments"] = contentResolver.query(childDocumentsUri,  "android/provider/DocumentsContract$Document", "COLUMN_DOCUMENT_ID");
+            QVariantList childDocumentList;
+            foreach (QString childDocumentId, childDocumentIds)
+            {
+                QVariantMap childDocument;
+                QString childDocumentUri = documentsContract.buildDocumentUriUsingTree(_uri, childDocumentId);
+                childDocument["documentId"] = childDocumentId;
+                childDocument["documentUri"] = documentsContract.buildDocumentUriUsingTree(_uri, childDocumentId);
+                childDocument["displayName"] = contentResolver.query(childDocumentUri, "android/provider/MediaStore$MediaColumns", "DISPLAY_NAME");
+                childDocument["size"] = contentResolver.query(childDocumentUri, "android/provider/MediaStore$MediaColumns", "SIZE");
+                childDocument["mimeType"] = contentResolver.query(childDocumentUri, "android/provider/MediaStore$MediaColumns", "MIME_TYPE");
+                childDocumentList.append(childDocument);
+            }
+            map["childDocuments"] = childDocumentList;
         }
     }
 
