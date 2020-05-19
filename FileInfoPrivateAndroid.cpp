@@ -157,14 +157,16 @@ QVariant FileInfoPrivateAndroid::extra() const
     map["MediaStore$MediaColumns.DISPLAY_NAME"] = contentResolver.query(_uri, "android/provider/MediaStore$MediaColumns", "DISPLAY_NAME");
     map["DocumentsContract$Document.COLUMN_DOCUMENT_ID"] = contentResolver.query(_uri, "android/provider/DocumentsContract$Document", "COLUMN_DOCUMENT_ID");
 
-    QString documentId = documentsContract.getTreeDocumentId(_uri);
+    QString documentId = documentsContract.getDocumentId(_uri);
+    map["DocumentId"] = documentId;
+
     QString treeDocumentId = documentsContract.getTreeDocumentId(_uri);
-    map["documentId"] = documentId;
-    map["treeDocumentId"] = treeDocumentId;
+    map["TreeDocumentId"] = treeDocumentId;
+
     if (!treeDocumentId.isEmpty() && !treeDocumentId.isNull())
     {
         QString childDocumentsUri = documentsContract.buildChildDocumentsUriUsingTree(_uri, treeDocumentId);
-        map["childDocumentsUri"] = childDocumentsUri;
+        map["ChildDocumentsUri"] = childDocumentsUri;
 
         QStringList childDocumentIds = contentResolver.query(childDocumentsUri,  "android/provider/DocumentsContract$Document", "COLUMN_DOCUMENT_ID");
         if (childDocumentIds.length() > 0)

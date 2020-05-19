@@ -251,10 +251,7 @@ Window {
                                 font.pointSize: 10
                                 onClicked: {
                                     image.source = ""
-                                    if ((fileInfo.url + "").match(/.jpg$/))
-                                    {
-                                        image.source = fileInfo.url;
-                                    }
+                                    image.source = fileInfo.url;
                                 }
                             }
 
@@ -351,7 +348,7 @@ Window {
     {
         results.log("notifyAccepted", fileUrl);
         fileInfo.url = fileUrl;
-        if ((fileInfo.fileName + "").match(/.jpg$/))
+        if ((fileInfo.displayName + "").match(/.jpg$/))
         {
             image.source = fileUrl;
         }

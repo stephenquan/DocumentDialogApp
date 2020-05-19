@@ -25,7 +25,6 @@ protected:
     QAndroidJniObject m_ContentResolver;
 
     QAndroidJniObject contentResolver();
-    InputStream _openInputStream(const QString& uri);
 
 };
 
