@@ -17,7 +17,7 @@ public:
 
     static bool isContentUri(const QString& uri);
 
-    QVariant query(const QString& uri, const QString& columnName);
+    QStringList query(const QString& uri, const QString& jclass, const QString& columnName);
     InputStream openInputStream(const QString& uri);
 
 protected:

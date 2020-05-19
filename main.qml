@@ -72,6 +72,7 @@ Window {
                             font.pointSize: 12
                         }
 
+
                         RowLayout {
                             Layout.fillWidth: true
 
@@ -106,6 +107,22 @@ Window {
                             text: qsTr("FileInfo properties")
                             font.pointSize: 12
                             font.bold: true
+                            wrapMode: Text.WrapAtWordBoundaryOrAnywhere
+                        }
+
+                        Text {
+                            Layout.fillWidth: true
+                            text: qsTr("url: %1").arg(JSON.stringify(fileInfo.url))
+                            font.pointSize: 10
+                            wrapMode: Text.WrapAtWordBoundaryOrAnywhere
+                        }
+
+                        Text {
+                            property url urlCopy: fileInfo.url
+                            property bool urlSame: (urlCopy + "") === (fileInfo.url + "")
+                            Layout.fillWidth: true
+                            text: qsTr("url (check): %1 (same: %2)").arg(urlCopy).arg(JSON.stringify(urlSame))
+                            font.pointSize: 10
                             wrapMode: Text.WrapAtWordBoundaryOrAnywhere
                         }
 
@@ -166,13 +183,6 @@ Window {
                             text: qsTr("filePath: %1").arg(JSON.stringify(fileInfo.filePath))
                             font.pointSize: 10
                             visible: verboseFileInfo
-                            wrapMode: Text.WrapAtWordBoundaryOrAnywhere
-                        }
-
-                        Text {
-                            Layout.fillWidth: true
-                            text: qsTr("url: %1").arg(JSON.stringify(fileInfo.url))
-                            font.pointSize: 10
                             wrapMode: Text.WrapAtWordBoundaryOrAnywhere
                         }
 
@@ -241,7 +251,10 @@ Window {
                                 font.pointSize: 10
                                 onClicked: {
                                     image.source = ""
-                                    image.source = fileInfo.url;
+                                    if ((fileInfo.url + "").match(/.jpg$/))
+                                    {
+                                        image.source = fileInfo.url;
+                                    }
                                 }
                             }
 
@@ -338,7 +351,10 @@ Window {
     {
         results.log("notifyAccepted", fileUrl);
         fileInfo.url = fileUrl;
-        image.source = fileUrl;
+        if ((fileInfo.fileName + "").match(/.jpg$/))
+        {
+            image.source = fileUrl;
+        }
         /*
         results.log("fileInfo.absoluteFilePath: ", fileInfo.absoluteFilePath);
         results.log("fileInfo.absolutePath: ", fileInfo.absolutePath);

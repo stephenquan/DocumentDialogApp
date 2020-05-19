@@ -92,3 +92,39 @@ QString DocumentsContract::getTreeDocumentId(const QString& uri)
 //----------------------------------------------------------------------
 //
 //----------------------------------------------------------------------
+
+QString DocumentsContract::buildChildDocumentsUriUsingTree(const QString& uri, const QString& documentId)
+{
+    JniExceptionCheck check(m_Env);
+
+    QAndroidJniObject urlString = QAndroidJniObject::fromString( uri );
+
+    QAndroidJniObject _uri = QAndroidJniObject::callStaticObjectMethod(
+                "android/net/Uri",
+                "parse",
+                "(Ljava/lang/String;)Landroid/net/Uri;",
+                urlString.object< jstring >() );
+    if ( !_uri.isValid() )
+    {
+        return QString();
+    }
+
+    QAndroidJniObject _documentId = QAndroidJniObject::fromString( documentId );
+
+    QAndroidJniObject childDocumentsUri = QAndroidJniObject::callStaticObjectMethod(
+                "android/provider/DocumentsContract",
+                "buildChildDocumentsUriUsingTree",
+                "(Landroid/net/Uri;Ljava/lang/String;)Landroid/net/Uri;",
+                _uri.object(),
+                _documentId.object());
+    if ( !childDocumentsUri.isValid() )
+    {
+        return QString();
+    }
+
+    return childDocumentsUri.toString();
+}
+
+//----------------------------------------------------------------------
+//
+//----------------------------------------------------------------------

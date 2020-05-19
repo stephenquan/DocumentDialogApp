@@ -25,13 +25,16 @@ void DocumentDialogPrivateAndroid::open()
     JniExceptionCheck check(env);
 
     QAndroidJniObject ACTION_OPEN_DOCUMENT = QAndroidJniObject::getStaticObjectField("android/content/Intent", "ACTION_OPEN_DOCUMENT", "Ljava/lang/String;");
-    qCInfo(documentDialog, "ACTION_OPEN_DOCUMENT = %s", ACTION_OPEN_DOCUMENT.toString().toUtf8().constData());
+    //QAndroidJniObject ACTION_OPEN_DOCUMENT = AndroidConsts(env).stringConst("android/content/Intent", "ACTION_OPEN_DOCUMENT");
+    //qCInfo(documentDialog, "ACTION_OPEN_DOCUMENT = %s", ACTION_OPEN_DOCUMENT.toString().toUtf8().constData());
 
     QAndroidJniObject ACTION_OPEN_DOCUMENT_TREE = QAndroidJniObject::getStaticObjectField("android/content/Intent", "ACTION_OPEN_DOCUMENT_TREE", "Ljava/lang/String;");
-    qCInfo(documentDialog, "ACTION_OPEN_DOCUMENT_TREE = %s", ACTION_OPEN_DOCUMENT_TREE.toString().toUtf8().constData());
+    //qCInfo(documentDialog, "ACTION_OPEN_DOCUMENT_TREE = %s", ACTION_OPEN_DOCUMENT_TREE.toString().toUtf8().constData());
+    //QAndroidJniObject ACTION_OPEN_DOCUMENT_TREE = AndroidConsts(env).stringConst("android/content/Intent", "ACTION_OPEN_DOCUMENT_TREE");
 
     QAndroidJniObject CATEGORY_OPENABLE = QAndroidJniObject::getStaticObjectField("android/content/Intent", "CATEGORY_OPENABLE", "Ljava/lang/String;");
-    qCInfo(documentDialog, "CATEGORY_OPENABLE = %s", CATEGORY_OPENABLE.toString().toUtf8().constData());
+    //qCInfo(documentDialog, "CATEGORY_OPENABLE = %s", CATEGORY_OPENABLE.toString().toUtf8().constData());
+    //QAndroidJniObject CATEGORY_OPENABLE = AndroidConsts(env).stringConst("android/content/Intent", "CATEGORY_OPENABLE");
 
     QAndroidJniObject intent = QAndroidJniObject("android/content/Intent");
     if (selectFolder())

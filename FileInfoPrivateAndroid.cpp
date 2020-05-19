@@ -31,16 +31,18 @@ bool FileInfoPrivateAndroid::exists() const
 {
     QAndroidJniEnvironment env;
     if (!isContentUri()) return FileInfoPrivate::exists();
-    QVariant size = ContentResolver(env).query(url().toString(), "SIZE");
-    return size.isValid() && !size.isNull();
+    QStringList size = ContentResolver(env).query(url().toString(), "android/provider/MediaStore$MediaColumns", "SIZE");
+    if (size.isEmpty() || size.length() == 0) return false;
+    return true;
 }
 
 QString FileInfoPrivateAndroid::displayName() const
 {
     QAndroidJniEnvironment env;
     if (!isContentUri()) return FileInfoPrivate::displayName();
-    QVariant displayName = ContentResolver(env).query(url().toString(), "DISPLAY_NAME");
-    return displayName.toString();
+    QStringList displayName = ContentResolver(env).query(url().toString(), "android/provider/MediaStore$MediaColumns", "DISPLAY_NAME");
+    if (displayName.isEmpty() || displayName.length() == 0) return QString();
+    return displayName[0];
 }
 
 QString FileInfoPrivateAndroid::fileName() const
@@ -59,15 +61,24 @@ qint64 FileInfoPrivateAndroid::size() const
 {
     QAndroidJniEnvironment env;
     if (!isContentUri()) return FileInfoPrivate::size();
-    QVariant size = ContentResolver(env).query(url().toString(), "SIZE");
-    if (!size.isValid() || size.isNull()) return -1;
-    return size.toLongLong();
+    QStringList size = ContentResolver(env).query(url().toString(), "android/provider/MediaStore$MediaColumns", "SIZE");
+    if (size.isEmpty() || size.length() == 0) return -1;
+    return size[0].toLongLong();
 }
 
 QByteArray FileInfoPrivateAndroid::readAll() const
 {
     QAndroidJniEnvironment env;
+    JniExceptionCheck check(env);
+
     if (!isContentUri()) return FileInfoPrivate::readAll();
+
+    DocumentsContract documentsContract(env);
+    QString documentId = documentsContract.getDocumentId(url().toString());
+    if (documentId.isEmpty() || documentId.isNull())
+    {
+        return QByteArray();
+    }
 
     InputStream inputStream = ContentResolver(env).openInputStream(url().toString());
     if (!inputStream.isValid())
@@ -122,7 +133,7 @@ void FileInfoPrivateAndroid::setUrl(const QVariant& url)
     */
 
     ContentResolver contentResolver(env);
-    QVariant data = contentResolver.query(_url, QStringLiteral("DATA"));
+    QVariant data = contentResolver.query(_url, "android/provider/MediaStore$MediaColumns", "DATA");
     if (data.isValid() && !data.isNull() && !data.toString().isEmpty())
     {
         _url = data.toString();
@@ -135,13 +146,32 @@ QVariant FileInfoPrivateAndroid::extra() const
 {
     QAndroidJniEnvironment env;
     if (!isContentUri()) return FileInfoPrivate::extra();
-    QVariantMap map;
+
     ContentResolver contentResolver(env);
     DocumentsContract documentsContract(env);
-    map["ContentResolver.SIZE"] = contentResolver.query(url().toString(), "SIZE");
-    map["ContentResolver.MIME_TYPE"] = contentResolver.query(url().toString(), "MIME_TYPE");
-    map["ContentResolver.DISPLAY_NAME"] = contentResolver.query(url().toString(), "DISPLAY_NAME");
-    map["DocumentsContract.documentId"] = documentsContract.getDocumentId(url().toString());
-    map["DocumentsContract.treeDocumentId"] = documentsContract.getTreeDocumentId(url().toString());
+    QString _uri = url().toString();
+
+    QVariantMap map;
+    map["MediaStore$MediaColumns.SIZE"] = contentResolver.query(_uri, "android/provider/MediaStore$MediaColumns", "SIZE");
+    map["MediaStore$MediaColumns.MIME_TYPE"] = contentResolver.query(_uri, "android/provider/MediaStore$MediaColumns", "MIME_TYPE");
+    map["MediaStore$MediaColumns.DISPLAY_NAME"] = contentResolver.query(_uri, "android/provider/MediaStore$MediaColumns", "DISPLAY_NAME");
+    map["DocumentsContract$Document.COLUMN_DOCUMENT_ID"] = contentResolver.query(_uri, "android/provider/DocumentsContract$Document", "COLUMN_DOCUMENT_ID");
+
+    QString documentId = documentsContract.getTreeDocumentId(_uri);
+    QString treeDocumentId = documentsContract.getTreeDocumentId(_uri);
+    map["documentId"] = documentId;
+    map["treeDocumentId"] = treeDocumentId;
+    if (!treeDocumentId.isEmpty() && !treeDocumentId.isNull())
+    {
+        QString childDocumentsUri = documentsContract.buildChildDocumentsUriUsingTree(_uri, treeDocumentId);
+        map["childDocumentsUri"] = childDocumentsUri;
+
+        if (!childDocumentsUri.isEmpty() && !childDocumentsUri.isNull())
+        {
+            map["childDocuments"] = contentResolver.query(childDocumentsUri,  "android/provider/DocumentsContract$Document", "COLUMN_DOCUMENT_ID");
+        }
+    }
+
+    map["Version"] = 1004;
     return map;
 }

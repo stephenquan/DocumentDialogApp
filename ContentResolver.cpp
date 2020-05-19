@@ -35,7 +35,7 @@ bool ContentResolver::isContentUri(const QString& uri)
 //
 //----------------------------------------------------------------------
 
-QVariant ContentResolver::query(const QString& uri, const QString& columnName)
+QStringList ContentResolver::query(const QString& uri, const QString& jclass, const QString& columnName)
 {
     JniExceptionCheck check(m_Env);
 
@@ -48,21 +48,21 @@ QVariant ContentResolver::query(const QString& uri, const QString& columnName)
                 urlString.object< jstring >() );
     if ( !_uri.isValid() )
     {
-        return QVariant();
+        return QStringList();
     }
 
     QAndroidJniObject _contentResolver = contentResolver();
     if ( !_contentResolver.isValid() )
     {
-        return QVariant();
+        return QStringList();
     }
 
     QAndroidJniObject _columnName = QAndroidJniObject::getStaticObjectField<jstring>(
-                "android/provider/MediaStore$MediaColumns",
+                jclass.toUtf8().data(),
                 columnName.toUtf8().data() );
     if ( !_columnName.isValid() )
     {
-        return QVariant();
+        return QStringList();
     }
 
     jobjectArray stringArray = m_Env->NewObjectArray( 1, m_Env->FindClass("java/lang/String"), nullptr);
@@ -80,17 +80,20 @@ QVariant ContentResolver::query(const QString& uri, const QString& columnName)
             );
     if ( !cursor.isValid() )
     {
-        return QVariant();
+        return QStringList();
     }
+
+    QStringList list;
 
     jboolean ok = cursor.callMethod<jboolean>( "moveToFirst" );
-    if ( !ok )
+    while ( ok )
     {
-        return QVariant();
+        QAndroidJniObject str = cursor.callObjectMethod( "getString", "(I)Ljava/lang/String;", 0 );
+        list.append(str.toString());
+        ok = cursor.callMethod<jboolean>( "moveToNext" );
     }
 
-    QAndroidJniObject str = cursor.callObjectMethod( "getString", "(I)Ljava/lang/String;", 0 );
-    return str.toString();
+    return list;
 }
 
 //----------------------------------------------------------------------
