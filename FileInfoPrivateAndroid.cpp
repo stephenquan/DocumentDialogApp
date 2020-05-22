@@ -99,7 +99,7 @@ FileFolder* FileInfoPrivateAndroid::folder() const
     return fileFolder;
     */
 
-    QRegExp rx("^(content:\\/\\/.*)/document/(.*)%2F.*%");
+    QRegExp rx("^(content:\\/\\/.*)/(document|tree)/(.*)%2F.*$");
     qDebug() << Q_FUNC_INFO << __LINE__ << "rx: " << rx.pattern();
     if (rx.indexIn(_url) != 0)
     {
@@ -109,7 +109,8 @@ FileFolder* FileInfoPrivateAndroid::folder() const
 
     qDebug() << Q_FUNC_INFO << __LINE__ << "rx.cap[1]: " << rx.cap(1);
     qDebug() << Q_FUNC_INFO << __LINE__ << "rx.cap[2]: " << rx.cap(2);
-    QString treeDocumentUri = rx.cap(1) + "/tree/" + rx.cap(2);
+    qDebug() << Q_FUNC_INFO << __LINE__ << "rx.cap[3]: " << rx.cap(3);
+    QString treeDocumentUri = rx.cap(1) + "/tree/" + rx.cap(3);
     qDebug() << Q_FUNC_INFO << __LINE__ << "treeDocumentUri: " << treeDocumentUri;
     FileFolder* fileFolder = new FileFolder();
     fileFolder->setPath(treeDocumentUri);

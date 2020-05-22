@@ -362,6 +362,7 @@ Window {
         image.source = "";
         results.clear();
         results.log("fileDialog.open");
+        fileDialog.selectFolder = selectFolderCheckBox.checked;
         fileDialog.open();
     }
 
