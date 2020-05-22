@@ -20,6 +20,7 @@ public:
     QString buildDocumentUri(const QString& authority, const QString& documentId);
     QString buildDocumentUriUsingTree(const QString& uri, const QString& documentId);
     QString buildTreeDocumentUri(const QString& authority, const QString& documentId);
+    bool isTreeUri(const QString& uri);
 
 protected:
     QAndroidJniEnvironment& m_Env;

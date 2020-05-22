@@ -69,6 +69,8 @@ FileFolder* FileInfoPrivateAndroid::folder() const
     QString _url = url().toString();
     DocumentsContract documentsContract(env);
 
+    _url = "content://com.android.externalstorage.documents/tree/primary%3AAndroid%2Fdata%2Forg.qtproject.example";
+
     //QString authority = ContentUris::parseAuthority(_url);
     //QString treeDocumentUri = documentsContract.buildTreeDocumentUri(authority, _url);
     //if (treeDocumentUri.isEmpty() || treeDocumentUri.isNull())
@@ -112,6 +114,7 @@ FileFolder* FileInfoPrivateAndroid::folder() const
     qDebug() << Q_FUNC_INFO << __LINE__ << "rx.cap[3]: " << rx.cap(3);
     QString treeDocumentUri = rx.cap(1) + "/tree/" + rx.cap(3);
     qDebug() << Q_FUNC_INFO << __LINE__ << "treeDocumentUri: " << treeDocumentUri;
+    return nullptr;
     FileFolder* fileFolder = new FileFolder();
     fileFolder->setPath(treeDocumentUri);
     QQmlEngine::setObjectOwnership(fileFolder, QQmlEngine::JavaScriptOwnership);
@@ -278,4 +281,26 @@ QVariant FileInfoPrivateAndroid::extra() const
 
     map["Version"] = 20200520;
     return map;
+}
+
+FileFolder* FileInfoPrivateAndroid::treeFolder() const
+{
+    QAndroidJniEnvironment env;
+    if (!isContentUri()) return FileInfoPrivate::folder();
+    QString _url = url().toString();
+    DocumentsContract documentsContract(env);
+
+    QRegExp rx("^(content:\\/\\/.*)/(tree)/(.*)%2F.*$");
+    qDebug() << Q_FUNC_INFO << __LINE__ << "rx: " << rx.pattern();
+    if (rx.indexIn(_url) != 0)
+    {
+        qDebug() << Q_FUNC_INFO << __LINE__ << "url: " << _url;
+        return nullptr;
+    }
+
+    QString treeDocumentUri = rx.cap(1) + "/tree/" + rx.cap(3);
+    FileFolder* fileFolder = new FileFolder();
+    fileFolder->setPath(treeDocumentUri);
+    QQmlEngine::setObjectOwnership(fileFolder, QQmlEngine::JavaScriptOwnership);
+    return fileFolder;
 }

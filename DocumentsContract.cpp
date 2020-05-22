@@ -214,3 +214,41 @@ QString DocumentsContract::buildTreeDocumentUri(const QString& authority, const 
 //----------------------------------------------------------------------
 //
 //----------------------------------------------------------------------
+
+bool DocumentsContract::isTreeUri(const QString& uri)
+{
+    JniExceptionCheck check(m_Env);
+
+    QAndroidJniObject urlString = QAndroidJniObject::fromString( uri );
+
+    QAndroidJniObject _uri = QAndroidJniObject::callStaticObjectMethod(
+                "android/net/Uri",
+                "parse",
+                "(Ljava/lang/String;)Landroid/net/Uri;",
+                urlString.object< jstring >() );
+    if ( !_uri.isValid() )
+    {
+        return false;
+    }
+
+    /*
+    jboolean result = QAndroidJniObject::callStaticMethod<jboolean>(
+                "android/provider/DocumentsContract",
+                "isTreeUri",
+                "(Landroid/net/Uri;)Z",
+                _authority.object(),
+                _documentId.object());
+    if ( !treeDocumentUri.isValid() )
+    {
+        return QString();
+    }
+    */
+
+    //return treeDocumentUri.toString();
+
+    return false; //TODO
+}
+
+//----------------------------------------------------------------------
+//
+//----------------------------------------------------------------------

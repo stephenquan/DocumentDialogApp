@@ -29,6 +29,9 @@ public:
     bool isContentUri() const;
     virtual void setUrl(const QVariant& url) Q_DECL_OVERRIDE;
 
+protected:
+    virtual FileFolder* treeFolder() const;
+
 };
 
 #endif
