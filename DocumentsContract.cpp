@@ -231,22 +231,12 @@ bool DocumentsContract::isTreeUri(const QString& uri)
         return false;
     }
 
-    /*
     jboolean result = QAndroidJniObject::callStaticMethod<jboolean>(
                 "android/provider/DocumentsContract",
                 "isTreeUri",
                 "(Landroid/net/Uri;)Z",
-                _authority.object(),
-                _documentId.object());
-    if ( !treeDocumentUri.isValid() )
-    {
-        return QString();
-    }
-    */
-
-    //return treeDocumentUri.toString();
-
-    return false; //TODO
+                _uri.object());
+    return (result != JNI_FALSE);
 }
 
 //----------------------------------------------------------------------

@@ -16,7 +16,8 @@ public:
     ContentUris(QAndroidJniEnvironment& env, QObject* parent = nullptr);
 
     static bool isContentUri(const QString& uri);
-    static QString parseAuthority(const QString& uri);
+    static bool parseContentUri(const QString& contentUri, QString& scheme, QString& authority, QString& treeOrDocument, QString& type, QStringList& path);
+    static QString buildContentUri(const QString& scheme, const QString& authority, const QString& treeOrDocument, const QString& type, const QStringList& path);
 
 protected:
     QAndroidJniEnvironment& m_Env;
