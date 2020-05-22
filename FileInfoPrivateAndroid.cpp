@@ -69,7 +69,7 @@ FileFolder* FileInfoPrivateAndroid::folder() const
     QString _url = url().toString();
     DocumentsContract documentsContract(env);
 
-    _url = "content://com.android.externalstorage.documents/tree/primary%3AAndroid%2Fdata%2Forg.qtproject.example";
+    //_url = "content://com.android.externalstorage.documents/tree/primary%3AAndroid%2Fdata%2Forg.qtproject.example";
 
     //QString authority = ContentUris::parseAuthority(_url);
     //QString treeDocumentUri = documentsContract.buildTreeDocumentUri(authority, _url);
@@ -114,7 +114,6 @@ FileFolder* FileInfoPrivateAndroid::folder() const
     qDebug() << Q_FUNC_INFO << __LINE__ << "rx.cap[3]: " << rx.cap(3);
     QString treeDocumentUri = rx.cap(1) + "/tree/" + rx.cap(3);
     qDebug() << Q_FUNC_INFO << __LINE__ << "treeDocumentUri: " << treeDocumentUri;
-    return nullptr;
     FileFolder* fileFolder = new FileFolder();
     fileFolder->setPath(treeDocumentUri);
     QQmlEngine::setObjectOwnership(fileFolder, QQmlEngine::JavaScriptOwnership);
