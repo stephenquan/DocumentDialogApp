@@ -40,6 +40,11 @@ QString FileInfo::baseName() const
     return m_FileInfoPrivate->baseName();
 }
 
+FileFolder* FileInfo::folder() const
+{
+    return m_FileInfoPrivate->folder();
+}
+
 QString FileInfo::displayName() const
 {
     return m_FileInfoPrivate->displayName();
@@ -58,6 +63,16 @@ QString FileInfo::fileName() const
 QString FileInfo::filePath() const
 {
     return m_FileInfoPrivate->filePath();
+}
+
+bool FileInfo::isFile() const
+{
+    return m_FileInfoPrivate->isFile();
+}
+
+bool FileInfo::isDir() const
+{
+    return m_FileInfoPrivate->isDir();
 }
 
 qint64 FileInfo::size() const

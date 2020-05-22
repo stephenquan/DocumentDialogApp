@@ -17,7 +17,9 @@ public:
     QString getDocumentId(const QString& uri);
     QString getTreeDocumentId(const QString& uri);
     QString buildChildDocumentsUriUsingTree(const QString& uri, const QString& documentId);
+    QString buildDocumentUri(const QString& authority, const QString& documentId);
     QString buildDocumentUriUsingTree(const QString& uri, const QString& documentId);
+    QString buildTreeDocumentUri(const QString& authority, const QString& documentId);
 
 protected:
     QAndroidJniEnvironment& m_Env;

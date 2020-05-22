@@ -128,6 +128,22 @@ Window {
 
                         Text {
                             Layout.fillWidth: true
+                            text: qsTr("isFile: %1").arg(JSON.stringify(fileInfo.isFile))
+                            font.pointSize: 10
+                            visible: verboseFileInfo
+                            wrapMode: Text.WrapAtWordBoundaryOrAnywhere
+                        }
+
+                        Text {
+                            Layout.fillWidth: true
+                            text: qsTr("isDir: %1").arg(JSON.stringify(fileInfo.isDir))
+                            font.pointSize: 10
+                            visible: verboseFileInfo
+                            wrapMode: Text.WrapAtWordBoundaryOrAnywhere
+                        }
+
+                        Text {
+                            Layout.fillWidth: true
                             text: qsTr("absoluteFilePath: %1").arg(JSON.stringify(fileInfo.absoluteFilePath))
                             font.pointSize: 10
                             visible: verboseFileInfo
@@ -147,6 +163,20 @@ Window {
                             text: qsTr("baseName: %1").arg(JSON.stringify(fileInfo.baseName))
                             font.pointSize: 10
                             visible: verboseFileInfo
+                            wrapMode: Text.WrapAtWordBoundaryOrAnywhere
+                        }
+
+                        Text {
+                            Layout.fillWidth: true
+                            text: qsTr("folder.path: %1").arg(JSON.stringify(fileInfo.folder ? fileInfo.folder.path : null))
+                            font.pointSize: 10
+                            wrapMode: Text.WrapAtWordBoundaryOrAnywhere
+                        }
+
+                        Text {
+                            Layout.fillWidth: true
+                            text: qsTr("folder.fileNames: %1").arg(JSON.stringify(fileInfo.folder ? fileInfo.folder.fileNames() : null))
+                            font.pointSize: 10
                             wrapMode: Text.WrapAtWordBoundaryOrAnywhere
                         }
 

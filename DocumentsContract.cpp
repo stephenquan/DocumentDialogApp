@@ -129,6 +129,31 @@ QString DocumentsContract::buildChildDocumentsUriUsingTree(const QString& uri, c
 //
 //----------------------------------------------------------------------
 
+QString DocumentsContract::buildDocumentUri(const QString& authority, const QString& documentId)
+{
+    JniExceptionCheck check(m_Env);
+
+    QAndroidJniObject _authority = QAndroidJniObject::fromString( authority );
+    QAndroidJniObject _documentId = QAndroidJniObject::fromString( documentId );
+
+    QAndroidJniObject documentUri = QAndroidJniObject::callStaticObjectMethod(
+                "android/provider/DocumentsContract",
+                "buildDocumentUri",
+                "(Ljava/lang/String;Ljava/lang/String;)Landroid/net/Uri;",
+                _authority.object(),
+                _documentId.object());
+    if ( !documentUri.isValid() )
+    {
+        return QString();
+    }
+
+    return documentUri.toString();
+}
+
+//----------------------------------------------------------------------
+//
+//----------------------------------------------------------------------
+
 QString DocumentsContract::buildDocumentUriUsingTree(const QString& uri, const QString& documentId)
 {
     JniExceptionCheck check(m_Env);
@@ -159,6 +184,31 @@ QString DocumentsContract::buildDocumentUriUsingTree(const QString& uri, const Q
     }
 
     return documentsUri.toString();
+}
+
+//----------------------------------------------------------------------
+//
+//----------------------------------------------------------------------
+
+QString DocumentsContract::buildTreeDocumentUri(const QString& authority, const QString& documentId)
+{
+    JniExceptionCheck check(m_Env);
+
+    QAndroidJniObject _authority = QAndroidJniObject::fromString( authority );
+    QAndroidJniObject _documentId = QAndroidJniObject::fromString( documentId );
+
+    QAndroidJniObject treeDocumentUri = QAndroidJniObject::callStaticObjectMethod(
+                "android/provider/DocumentsContract",
+                "buildTreeDocumentUri",
+                "(Ljava/lang/String;Ljava/lang/String;)Landroid/net/Uri;",
+                _authority.object(),
+                _documentId.object());
+    if ( !treeDocumentUri.isValid() )
+    {
+        return QString();
+    }
+
+    return treeDocumentUri.toString();
 }
 
 //----------------------------------------------------------------------

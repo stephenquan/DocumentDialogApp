@@ -26,15 +26,6 @@ ContentResolver::~ContentResolver()
 //
 //----------------------------------------------------------------------
 
-bool ContentResolver::isContentUri(const QString& uri)
-{
-    return uri.startsWith("content://");
-}
-
-//----------------------------------------------------------------------
-//
-//----------------------------------------------------------------------
-
 QStringList ContentResolver::query(const QString& uri, const QString& jclass, const QString& columnName)
 {
     JniExceptionCheck check(m_Env);

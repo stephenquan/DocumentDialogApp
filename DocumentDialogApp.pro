@@ -16,6 +16,8 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     DocumentDialog.cpp \
     DocumentDialogPrivate.cpp \
+    FileFolder.cpp \
+    FileFolderPrivate.cpp \
     FileInfo.cpp \
     FileInfoPrivate.cpp \
     main.cpp
@@ -23,6 +25,8 @@ SOURCES += \
 HEADERS += \
     DocumentDialog.h \
     DocumentDialogPrivate.h \
+    FileFolder.h \
+    FileFolderPrivate.h \
     FileInfo.h \
     FileInfoPrivate.h \ \
     JniExceptionCheck.h
@@ -31,17 +35,21 @@ android: {
     QT += androidextras
 
     SOURCES += \
-        DocumentDialogPrivateAndroid.cpp \
-        FileInfoPrivateAndroid.cpp \
         ContentResolver.cpp \
+        ContentUris.cpp \
+        DocumentDialogPrivateAndroid.cpp \
         DocumentsContract.cpp \
+        FileFolderPrivateAndroid.cpp \
+        FileInfoPrivateAndroid.cpp \
         InputStream.cpp
 
     HEADERS += \
-        DocumentDialogPrivateAndroid.h \
-        FileInfoPrivateAndroid.h \
         ContentResolver.h \
+        ContentUris.h \
         DocumentsContract.h \
+        DocumentDialogPrivateAndroid.h \
+        FileFolderPrivateAndroid.h \
+        FileInfoPrivateAndroid.h \
         InputStream.h
 }
 

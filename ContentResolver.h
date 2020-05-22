@@ -15,8 +15,6 @@ public:
     ContentResolver(QAndroidJniEnvironment& env, QObject* parent = nullptr);
     ~ContentResolver();
 
-    static bool isContentUri(const QString& uri);
-
     QStringList query(const QString& uri, const QString& jclass, const QString& columnName);
     InputStream openInputStream(const QString& uri);
 

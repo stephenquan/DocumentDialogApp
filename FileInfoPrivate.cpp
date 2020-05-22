@@ -1,6 +1,10 @@
-#include "FileInfoPrivate.h"
 #include <QUrl>
 #include <QFileInfo>
+#include <QDir>
+#include <QQmlEngine>
+
+#include "FileFolder.h"
+#include "FileInfoPrivate.h"
 
 FileInfoPrivate::FileInfoPrivate(QObject* parent) :
     QObject(parent)
@@ -22,6 +26,14 @@ QString FileInfoPrivate::baseName() const
     return fileInfo().baseName();
 }
 
+FileFolder* FileInfoPrivate::folder() const
+{
+    FileFolder* _dir = new FileFolder();
+    _dir->setPath(fileInfo().dir().path());
+    QQmlEngine::setObjectOwnership(_dir, QQmlEngine::JavaScriptOwnership);
+    return _dir;
+}
+
 QString FileInfoPrivate::displayName() const
 {
     return fileInfo().fileName();
@@ -40,6 +52,16 @@ QString FileInfoPrivate::fileName() const
 QString FileInfoPrivate::filePath() const
 {
     return fileInfo().filePath();
+}
+
+bool FileInfoPrivate::isFile() const
+{
+    return fileInfo().isFile();
+}
+
+bool FileInfoPrivate::isDir() const
+{
+    return fileInfo().isDir();
 }
 
 QByteArray FileInfoPrivate::readAll() const

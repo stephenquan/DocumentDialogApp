@@ -2,6 +2,7 @@
 #include <QQmlApplicationEngine>
 #include "DocumentDialog.h"
 #include "FileInfo.h"
+#include "FileFolder.h"
 
 int main(int argc, char *argv[])
 {
@@ -14,6 +15,7 @@ int main(int argc, char *argv[])
 
     qmlRegisterType<DocumentDialog>("StephenQuan", 1, 0, "DocumentDialog");
     qmlRegisterType<FileInfo>("StephenQuan", 1, 0, "FileInfo");
+    qmlRegisterType<FileFolder>("StephenQuan", 1, 0, "FileFolder");
 
     QQmlApplicationEngine engine;
     const QUrl url(QStringLiteral("qrc:/main.qml"));

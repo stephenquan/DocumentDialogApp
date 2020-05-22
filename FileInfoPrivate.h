@@ -6,6 +6,8 @@
 #include <QFileInfo>
 #include <QUrl>
 
+class FileFolder;
+
 class FileInfoPrivate : public QObject
 {
     Q_OBJECT
@@ -17,9 +19,12 @@ public:
     virtual QString absoluteFilePath() const;
     virtual QString baseName() const;
     virtual bool exists() const;
+    virtual FileFolder* folder() const;
     virtual QString displayName() const;
     virtual QString fileName() const;
     virtual QString filePath() const;
+    virtual bool isFile() const;
+    virtual bool isDir() const;
     virtual QByteArray readAll() const;
     virtual qint64 size() const;
     virtual QVariant extra() const;
