@@ -45,8 +45,21 @@ QString FileInfoPrivateAndroid::displayName() const
 {
     QAndroidJniEnvironment env;
     if (!isContentUri()) return FileInfoPrivate::displayName();
-    QStringList displayName = ContentResolver(env).query(url().toString(), "android/provider/MediaStore$MediaColumns", "DISPLAY_NAME");
-    if (displayName.isEmpty() || displayName.length() == 0) return QString();
+
+    QString _uri = url().toString();
+
+    DocumentsContract documentsContract(env);
+    if (documentsContract.isTreeUri(_uri))
+    {
+        return QString();
+    }
+
+    QStringList displayName = ContentResolver(env).query(_uri, "android/provider/MediaStore$MediaColumns", "DISPLAY_NAME");
+    if (displayName.isEmpty() || displayName.length() == 0)
+    {
+        return QString();
+    }
+
     return displayName[0];
 }
 
@@ -107,8 +120,21 @@ qint64 FileInfoPrivateAndroid::size() const
 {
     QAndroidJniEnvironment env;
     if (!isContentUri()) return FileInfoPrivate::size();
+
+    QString _uri = url().toString();
+
+    DocumentsContract documentsContract(env);
+    if (documentsContract.isTreeUri(_uri))
+    {
+        return 0;
+    }
+
     QStringList size = ContentResolver(env).query(url().toString(), "android/provider/MediaStore$MediaColumns", "SIZE");
-    if (size.isEmpty() || size.length() == 0) return -1;
+    if (size.isEmpty() || size.length() == 0)
+    {
+        return -1;
+    }
+
     return size[0].toLongLong();
 }
 
@@ -158,6 +184,7 @@ void FileInfoPrivateAndroid::setUrl(const QVariant& url)
     JniExceptionCheck check(env);
 
     if (!ContentUris::isContentUri(_url)) return FileInfoPrivate::setUrl(_url);
+
 
     /*
     DocumentsContract documentsContract(env);
@@ -228,6 +255,8 @@ QVariant FileInfoPrivateAndroid::extra() const
                 QString childDocumentUri = documentsContract.buildDocumentUriUsingTree(_uri, childDocumentId);
                 childDocument["documentId"] = childDocumentId;
                 childDocument["documentUri"] = childDocumentUri;
+                childDocument["documentId2"] = documentsContract.getDocumentId(childDocumentId);
+                childDocument["treeDocumentId"] = documentsContract.getDocumentId(childDocumentId);
                 childDocument["displayName"] = contentResolver.query(childDocumentUri, "android/provider/MediaStore$MediaColumns", "DISPLAY_NAME");
                 childDocument["size"] = contentResolver.query(childDocumentUri, "android/provider/MediaStore$MediaColumns", "SIZE");
                 childDocument["mimeType"] = contentResolver.query(childDocumentUri, "android/provider/MediaStore$MediaColumns", "MIME_TYPE");

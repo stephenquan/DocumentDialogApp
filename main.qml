@@ -14,6 +14,8 @@ Window {
     title: qsTr("Hello World")
 
     property bool verboseFileInfo: false
+    property var fileNames: ""
+    property var folderNames: ""
 
     Page {
         anchors.fill: parent
@@ -130,7 +132,6 @@ Window {
                             Layout.fillWidth: true
                             text: qsTr("isFile: %1").arg(JSON.stringify(fileInfo.isFile))
                             font.pointSize: 10
-                            visible: verboseFileInfo
                             wrapMode: Text.WrapAtWordBoundaryOrAnywhere
                         }
 
@@ -138,7 +139,6 @@ Window {
                             Layout.fillWidth: true
                             text: qsTr("isDir: %1").arg(JSON.stringify(fileInfo.isDir))
                             font.pointSize: 10
-                            visible: verboseFileInfo
                             wrapMode: Text.WrapAtWordBoundaryOrAnywhere
                         }
 
@@ -169,13 +169,6 @@ Window {
                         Text {
                             Layout.fillWidth: true
                             text: qsTr("folder.path: %1").arg(JSON.stringify(fileInfo.folder ? fileInfo.folder.path : null))
-                            font.pointSize: 10
-                            wrapMode: Text.WrapAtWordBoundaryOrAnywhere
-                        }
-
-                        Text {
-                            Layout.fillWidth: true
-                            text: qsTr("folder.fileNames: %1").arg(JSON.stringify(fileInfo.folder ? fileInfo.folder.fileNames() : null))
                             font.pointSize: 10
                             wrapMode: Text.WrapAtWordBoundaryOrAnywhere
                         }
@@ -220,6 +213,7 @@ Window {
                             Layout.fillWidth: true
                             text: qsTr("extra: %1").arg(fileInfo.url ? JSON.stringify(fileInfo.extra, undefined, 2) : null)
                             font.pointSize: 10
+                            visible: verboseFileInfo
                             wrapMode: Text.WrapAtWordBoundaryOrAnywhere
                         }
 
@@ -228,6 +222,49 @@ Window {
                             font.pointSize: 12
 
                             onClicked: verboseFileInfo = !verboseFileInfo
+                        }
+
+                    }
+                }
+
+                Frame {
+                    Layout.fillWidth: true
+
+                    visible: fileFolder.path !== ""
+
+                    ColumnLayout {
+
+                        width: parent.width
+
+                        spacing: 10
+
+                        Text {
+                            Layout.fillWidth: true
+                            text: qsTr("FileFolder properties")
+                            font.pointSize: 12
+                            font.bold: true
+                            wrapMode: Text.WrapAtWordBoundaryOrAnywhere
+                        }
+
+                        Text {
+                            Layout.fillWidth: true
+                            text: qsTr("path: %1").arg(JSON.stringify(fileFolder.path))
+                            font.pointSize: 10
+                            wrapMode: Text.WrapAtWordBoundaryOrAnywhere
+                        }
+
+                        Text {
+                            Layout.fillWidth: true
+                            text: qsTr("fileNames: %1").arg(JSON.stringify(fileNames))
+                            font.pointSize: 10
+                            wrapMode: Text.WrapAtWordBoundaryOrAnywhere
+                        }
+
+                        Text {
+                            Layout.fillWidth: true
+                            text: qsTr("folderNames: %1").arg(JSON.stringify(folderNames))
+                            font.pointSize: 10
+                            wrapMode: Text.WrapAtWordBoundaryOrAnywhere
                         }
 
                     }
@@ -357,6 +394,10 @@ Window {
         id: fileInfo
     }
 
+    FileFolder {
+        id: fileFolder
+    }
+
     function openFileDialog()
     {
         image.source = "";
@@ -383,14 +424,17 @@ Window {
         {
             image.source = fileUrl;
         }
-        /*
-        results.log("fileInfo.absoluteFilePath: ", fileInfo.absoluteFilePath);
-        results.log("fileInfo.absolutePath: ", fileInfo.absolutePath);
-        results.log("fileInfo.exists: ", fileInfo.exists);
-        results.log("fileInfo.size: ", fileInfo.size);
-        results.log("fileInfo.fileName: ", fileInfo.fileName);
-        results.log("fileInfo.filePath: ", fileInfo.filePath);
-        */
+
+        fileFolder.path = "";
+        fileNames = "";
+        folderNames = "";
+        if (fileInfo.isDir)
+        {
+            fileFolder.url = fileUrl;
+            fileNames = fileFolder.fileNames();
+            folderNames = fileFolder.folderNames();
+        }
+
         results.log("fileInfo.url: ", fileInfo.url);
     }
 

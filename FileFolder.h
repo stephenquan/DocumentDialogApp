@@ -11,16 +11,20 @@ class FileFolder : public QObject
     Q_OBJECT
 
     Q_PROPERTY(QString path READ path WRITE setPath NOTIFY fileFolderChanged)
+    Q_PROPERTY(QVariant url READ url WRITE setUrl NOTIFY fileFolderChanged)
 
 public:
     FileFolder(QObject* parent = nullptr);
     ~FileFolder();
 
-    Q_INVOKABLE QStringList fileNames() const;
+    Q_INVOKABLE QStringList fileNames(const QVariant& nameFilter = QStringLiteral("*"), bool subFolders = false) const;
+    Q_INVOKABLE QStringList folderNames(const QVariant& nameFilter = QStringLiteral("*"), bool subFolders = false) const;
 
 public:
     QString path() const;
     void setPath(const QString& path);
+    QVariant url() const;
+    void setUrl(const QVariant& url);
 
 signals:
     void fileFolderChanged();

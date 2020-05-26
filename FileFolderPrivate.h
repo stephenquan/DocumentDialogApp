@@ -15,9 +15,14 @@ public:
 
     virtual QString path() const;
     virtual void setPath(const QString& path);
-    virtual QStringList fileNames() const;
+    virtual QVariant url() const;
+    virtual void setUrl(const QVariant& url);
+    virtual QStringList fileNames(const QVariant& nameFilter = QStringLiteral("*"), bool subFolders = false) const;
+    virtual QStringList folderNames(const QVariant& nameFilter = QStringLiteral("*"), bool subFolders = false) const;
 
     QDir dir() const;
+    void names(QStringList& entryList, const QDir& dir, const QStringList& nameFilters, const QString &basePath, bool recurse, bool files) const;
+    QStringList nameFilters(const QVariant& nameFilter) const;
 
 signals:
     void fileFolderChanged();

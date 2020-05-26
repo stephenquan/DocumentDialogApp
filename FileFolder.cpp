@@ -35,7 +35,22 @@ void FileFolder::setPath(const QString& path)
     m_FileFolderPrivate->setPath(path);
 }
 
-QStringList FileFolder::fileNames() const
+QVariant FileFolder::url() const
 {
-    return m_FileFolderPrivate->fileNames();
+    return m_FileFolderPrivate->url();
+}
+
+void FileFolder::setUrl(const QVariant& url)
+{
+    m_FileFolderPrivate->setUrl(url);
+}
+
+QStringList FileFolder::fileNames(const QVariant& nameFilter, bool subFolders) const
+{
+    return m_FileFolderPrivate->fileNames(nameFilter, subFolders);
+}
+
+QStringList FileFolder::folderNames(const QVariant& nameFilter, bool subFolders) const
+{
+    return m_FileFolderPrivate->folderNames(nameFilter, subFolders);
 }
