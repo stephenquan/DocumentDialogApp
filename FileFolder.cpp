@@ -54,3 +54,13 @@ QStringList FileFolder::folderNames(const QVariant& nameFilter, bool subFolders)
 {
     return m_FileFolderPrivate->folderNames(nameFilter, subFolders);
 }
+
+QString FileFolder::filePath(const QString& fileName) const
+{
+    return m_FileFolderPrivate->filePath(fileName);
+}
+
+QVariant FileFolder::fileUrl(const QString& fileName) const
+{
+    return m_FileFolderPrivate->fileUrl(fileName);
+}

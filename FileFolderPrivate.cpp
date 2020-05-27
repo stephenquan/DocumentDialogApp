@@ -47,6 +47,16 @@ QDir FileFolderPrivate::dir() const
     return QDir(m_Path);
 }
 
+QString FileFolderPrivate::filePath(const QString& fileName) const
+{
+    return dir().filePath(fileName);
+}
+
+QVariant FileFolderPrivate::fileUrl(const QString& fileName) const
+{
+    return QUrl::fromLocalFile(filePath(fileName)).toString();
+}
+
 //------------------------------------------------------------------------------
 
 void FileFolderPrivate::names(QStringList& entryList, const QDir& dir, const QStringList& nameFilters, const QString &basePath, bool recurse, bool files) const

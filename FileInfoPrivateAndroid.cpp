@@ -48,12 +48,6 @@ QString FileInfoPrivateAndroid::displayName() const
 
     QString _uri = url().toString();
 
-    DocumentsContract documentsContract(env);
-    if (documentsContract.isTreeUri(_uri))
-    {
-        return QString();
-    }
-
     QStringList displayName = ContentResolver(env).query(_uri, "android/provider/MediaStore$MediaColumns", "DISPLAY_NAME");
     if (displayName.isEmpty() || displayName.length() == 0)
     {
@@ -99,21 +93,38 @@ FileFolder* FileInfoPrivateAndroid::folder() const
 bool FileInfoPrivateAndroid::isFile() const
 {
     QAndroidJniEnvironment env;
-    DocumentsContract documentsContract(env);
-    if (!isContentUri()) return FileInfoPrivate::isFile();
+    if (!isContentUri())
+    {
+        return FileInfoPrivate::isDir();
+    }
+
     QString _url = url().toString();
-    QString documentId = documentsContract.getDocumentId(_url);
-    return !documentId.isNull() && !documentId.isEmpty();
+
+    ContentResolver contentResolver(env);
+    QStringList mimeTypes = contentResolver.query(_url, "android/provider/MediaStore$MediaColumns", "MIME_TYPE");
+    QString mimeType = mimeTypes.length() > 0 ? mimeTypes[0] : "";
+    bool isFolder = (mimeType == "vnd.android.document/directory" || mimeType == "");
+    bool isFile = !isFolder;
+    return isFile;
 }
+
+
 
 bool FileInfoPrivateAndroid::isDir() const
 {
     QAndroidJniEnvironment env;
-    DocumentsContract documentsContract(env);
-    if (!isContentUri()) return FileInfoPrivate::isDir();
+    if (!isContentUri())
+    {
+        return FileInfoPrivate::isDir();
+    }
+
     QString _url = url().toString();
-    QString treeDocumentId = documentsContract.getTreeDocumentId(_url);
-    return !treeDocumentId.isNull() && !treeDocumentId.isEmpty();
+
+    ContentResolver contentResolver(env);
+    QStringList mimeTypes = contentResolver.query(_url, "android/provider/MediaStore$MediaColumns", "MIME_TYPE");
+    QString mimeType = mimeTypes.length() > 0 ? mimeTypes[0] : "";
+    bool isFolder = (mimeType == "vnd.android.document/directory" || mimeType == "");
+    return isFolder;
 }
 
 qint64 FileInfoPrivateAndroid::size() const
@@ -122,12 +133,6 @@ qint64 FileInfoPrivateAndroid::size() const
     if (!isContentUri()) return FileInfoPrivate::size();
 
     QString _uri = url().toString();
-
-    DocumentsContract documentsContract(env);
-    if (documentsContract.isTreeUri(_uri))
-    {
-        return 0;
-    }
 
     QStringList size = ContentResolver(env).query(url().toString(), "android/provider/MediaStore$MediaColumns", "SIZE");
     if (size.isEmpty() || size.length() == 0)

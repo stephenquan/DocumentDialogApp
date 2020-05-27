@@ -19,6 +19,8 @@ public:
     virtual void setUrl(const QVariant& url);
     virtual QStringList fileNames(const QVariant& nameFilter = QStringLiteral("*"), bool subFolders = false) const;
     virtual QStringList folderNames(const QVariant& nameFilter = QStringLiteral("*"), bool subFolders = false) const;
+    virtual QString filePath(const QString& fileName) const;
+    virtual QVariant fileUrl(const QString& fileName) const;
 
     QDir dir() const;
     void names(QStringList& entryList, const QDir& dir, const QStringList& nameFilters, const QString &basePath, bool recurse, bool files) const;

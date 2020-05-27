@@ -13,8 +13,10 @@ class FileFolderPrivateAndroid : public FileFolderPrivate
 public:
     FileFolderPrivateAndroid(QObject* parent = nullptr);
 
-    virtual QStringList fileNames(const QVariant& nameFilter = QStringLiteral("*"), bool subFolders = false) const;
-    virtual QStringList folderNames(const QVariant& nameFilter = QStringLiteral("*"), bool subFolders = false) const;
+    virtual QStringList fileNames(const QVariant& nameFilter = QStringLiteral("*"), bool subFolders = false) const Q_DECL_OVERRIDE;
+    virtual QStringList folderNames(const QVariant& nameFilter = QStringLiteral("*"), bool subFolders = false) const Q_DECL_OVERRIDE;
+    virtual QString filePath(const QString& fileName) const Q_DECL_OVERRIDE;
+    virtual QVariant fileUrl(const QString& fileName) const Q_DECL_OVERRIDE;
 
     void names(QStringList& entryList, const QString& uri, const bool recurse, bool files, const QVariant&nameFilter, bool subFolders, QAndroidJniEnvironment& env) const;
     QStringList contentList(const QString& uri, QAndroidJniEnvironment& env) const;

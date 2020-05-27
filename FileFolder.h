@@ -19,6 +19,8 @@ public:
 
     Q_INVOKABLE QStringList fileNames(const QVariant& nameFilter = QStringLiteral("*"), bool subFolders = false) const;
     Q_INVOKABLE QStringList folderNames(const QVariant& nameFilter = QStringLiteral("*"), bool subFolders = false) const;
+    Q_INVOKABLE QString filePath(const QString& fileName) const;
+    Q_INVOKABLE QVariant fileUrl(const QString& fileName) const;
 
 public:
     QString path() const;

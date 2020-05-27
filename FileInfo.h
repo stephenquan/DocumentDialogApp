@@ -36,7 +36,7 @@ public:
 signals:
     void fileInfoChanged();
 
-protected:
+public:
     QString absoluteFilePath() const;
     QString absolutePath() const;
     QString baseName() const;
@@ -53,7 +53,9 @@ protected:
     QVariant url() const;
     void setUrl(const QVariant& url);
 
+protected:
     FileInfoPrivate* m_FileInfoPrivate;
+
 };
 
 #endif

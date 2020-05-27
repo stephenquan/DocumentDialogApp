@@ -1,5 +1,12 @@
 <RCC>
     <qresource prefix="/">
-        <file>main.qml</file>
+        <file>qml/main.qml</file>
+        <file>qml/FileInfoPage.qml</file>
+        <file>qml/FileFolderPage.qml</file>
+        <file>qml/StartPage.qml</file>
+        <file>qml/Images/file-32.svg</file>
+        <file>qml/Images/folder-32.svg</file>
+        <file>qml/Images/hamburger-32.svg</file>
+        <file>qml/Images/chevron-left-32.svg</file>
     </qresource>
 </RCC>

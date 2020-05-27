@@ -1,4 +1,5 @@
 #include <QAndroidJniEnvironment>
+#include <QDebug>
 
 #include "FileFolderPrivateAndroid.h"
 #include "ContentUris.h"
@@ -45,6 +46,20 @@ QStringList FileFolderPrivateAndroid::folderNames(const QVariant& nameFilter, bo
     return entryList;
 }
 
+QString FileFolderPrivateAndroid::filePath(const QString& fileName) const
+{
+    if (!ContentUris::isContentUri(m_Path)) return FileFolderPrivate::filePath(fileName);
+
+    return fileName;
+}
+
+QVariant FileFolderPrivateAndroid::fileUrl(const QString& fileName) const
+{
+    if (!ContentUris::isContentUri(m_Path)) return FileFolderPrivate::filePath(fileName);
+
+    return fileName;
+}
+
 void FileFolderPrivateAndroid::names(QStringList& entryList, const QString& uri, const bool recurse, bool files, const QVariant& nameFilter, bool subFolders, QAndroidJniEnvironment& env) const
 {
     Q_UNUSED(nameFilter)
@@ -55,21 +70,29 @@ void FileFolderPrivateAndroid::names(QStringList& entryList, const QString& uri,
 
     foreach (QString content, contentList(uri, env))
     {
-        QStringList displayName =  contentResolver.query(content, "android/provider/MediaStore$MediaColumns", "DISPLAY_NAME");
-        bool isFile = displayName.length() > 0;
+        //QStringList displayName =  contentResolver.query(content, "android/provider/MediaStore$MediaColumns", "DISPLAY_NAME");
+        //bool isFile = displayName.length() > 0;
+        //bool isFolder = !isFile;
+        //bool isFolder = documentsContract.isTreeUri(content);
+        //bool isFile = !isFolder;
+        QStringList mimeTypes = contentResolver.query(content, "android/provider/MediaStore$MediaColumns", "MIME_TYPE");
+        QString mimeType = mimeTypes.length() > 0 ? mimeTypes[0] : "";
+        bool isFolder = (mimeType == "vnd.android.document/directory" || mimeType == "");
+        bool isFile = !isFolder;
         if (isFile)
         {
             if (files)
             {
+                //entryList.append("FILE " + mimeType + " " + content);
                 entryList.append(content);
             }
         }
 
-        bool isFolder = !isFile;
         if (isFolder)
         {
             if (!files)
             {
+                //entryList.append("FOLDER " + mimeType + " " + content);
                 entryList.append(content);
             }
         }
@@ -85,6 +108,14 @@ QStringList FileFolderPrivateAndroid::contentList(const QString& uri, QAndroidJn
         return QStringList();
     }
 
+    QString scheme;
+    QString authority;
+    QString treeOrDocument;
+    QString type;
+    QStringList path;
+    //ContentUris::parseContentUri(uri, scheme, authority, treeOrDocument, type, path);
+    authority = QUrl(uri).host();
+
     QString childDocumentsUri = documentsContract.buildChildDocumentsUriUsingTree(uri, treeDocumentId);
 
     if (childDocumentsUri.isEmpty() || childDocumentsUri.isNull())
@@ -98,8 +129,22 @@ QStringList FileFolderPrivateAndroid::contentList(const QString& uri, QAndroidJn
 
     foreach (QString childDocumentId, childDocumentIds)
     {
-        QString childDocumentUri = documentsContract.buildDocumentUriUsingTree(m_Path, childDocumentId);
-        childDocumentUris.append(childDocumentUri);
+        QString childTreeDocumentUri = documentsContract.buildDocumentUriUsingTree(m_Path, childDocumentId);
+        QString childDocumentUri = documentsContract.buildDocumentUri(authority, childDocumentId);
+        QStringList mimeTypes = contentResolver.query(childTreeDocumentUri, "android/provider/MediaStore$MediaColumns", "MIME_TYPE");
+        QString mimeType = mimeTypes.length() > 0 ? mimeTypes[0] : "";
+        if (mimeType == "vnd.android.document/directory" || mimeType == "")
+        {
+            //childDocumentUris.append("TREE " + mimeType + " " + childTreeDocumentUri);
+            //childDocumentUris.append(childTreeDocumentUri);
+        }
+        else
+        {
+            //childDocumentUris.append("DOCUMENT " + mimeType + " " + childDocumentUri);
+            //childDocumentUris.append(childDocumentUri);
+        }
+        childDocumentUris.append(childTreeDocumentUri);
+        //childDocumentUris.append(childDocumentUri);
     }
     return childDocumentUris;
 }
