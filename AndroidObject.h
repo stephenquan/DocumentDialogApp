@@ -2,8 +2,8 @@
 //
 //----------------------------------------------------------------------
 
-#ifndef __DocumentDialog__
-#define __DocumentDialog__
+#ifndef __AndroidObject__
+#define __AndroidObject__
 
 //----------------------------------------------------------------------
 //
@@ -11,43 +11,26 @@
 
 #include <QObject>
 #include <QVariant>
+#include <QAndroidJniObject>
+#include <QAndroidJniEnvironment>
 
 //----------------------------------------------------------------------
 //
 //----------------------------------------------------------------------
 
-class DocumentDialogPrivate;
-
-//----------------------------------------------------------------------
-//
-//----------------------------------------------------------------------
-
-class DocumentDialog : public QObject
+class AndroidObject : public QObject
 {
     Q_OBJECT
 
-    Q_PROPERTY(QVariant fileUrl READ fileUrl NOTIFY fileUrlChanged)
-    Q_PROPERTY(bool selectFolder READ selectFolder WRITE setSelectFolder NOTIFY selectFolderChanged)
-
 public:
-    DocumentDialog(QObject* parent = nullptr);
-    ~DocumentDialog();
+    AndroidObject(QAndroidJniEnvironment& env, QObject* parent = nullptr);
 
-    Q_INVOKABLE void open();
-
-signals:
-    void fileUrlChanged();
-    void selectFolderChanged();
-
-    void accepted();
-    void rejected();
+    virtual const char* jclass() const = 0;
+    QString staticString(const QString& name) const;
+    static QString staticString(const QString& jclass, const QString& name, QAndroidJniEnvironment& env);
 
 protected:
-    DocumentDialogPrivate* m_DocumentDialogPrivate;
-
-    QVariant fileUrl() const;
-    bool selectFolder() const;
-    void setSelectFolder(bool selectFolder);
+    QAndroidJniEnvironment& m_Env;
 
 };
 

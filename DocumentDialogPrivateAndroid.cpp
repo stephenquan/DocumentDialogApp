@@ -1,8 +1,16 @@
+//----------------------------------------------------------------------
+//
+//----------------------------------------------------------------------
+
 #include "DocumentDialogPrivateAndroid.h"
 #include <QtAndroid>
 #include <QAndroidJniEnvironment>
 #include <QDebug>
 #include "JniExceptionCheck.h"
+
+//----------------------------------------------------------------------
+//
+//----------------------------------------------------------------------
 
 #define DOCUMENT_DIALOG_REQUEST_CODE 12
 
@@ -25,16 +33,10 @@ void DocumentDialogPrivateAndroid::open()
     JniExceptionCheck check(env);
 
     QAndroidJniObject ACTION_OPEN_DOCUMENT = QAndroidJniObject::getStaticObjectField("android/content/Intent", "ACTION_OPEN_DOCUMENT", "Ljava/lang/String;");
-    //QAndroidJniObject ACTION_OPEN_DOCUMENT = AndroidConsts(env).stringConst("android/content/Intent", "ACTION_OPEN_DOCUMENT");
-    //qCInfo(documentDialog, "ACTION_OPEN_DOCUMENT = %s", ACTION_OPEN_DOCUMENT.toString().toUtf8().constData());
 
     QAndroidJniObject ACTION_OPEN_DOCUMENT_TREE = QAndroidJniObject::getStaticObjectField("android/content/Intent", "ACTION_OPEN_DOCUMENT_TREE", "Ljava/lang/String;");
-    //qCInfo(documentDialog, "ACTION_OPEN_DOCUMENT_TREE = %s", ACTION_OPEN_DOCUMENT_TREE.toString().toUtf8().constData());
-    //QAndroidJniObject ACTION_OPEN_DOCUMENT_TREE = AndroidConsts(env).stringConst("android/content/Intent", "ACTION_OPEN_DOCUMENT_TREE");
 
     QAndroidJniObject CATEGORY_OPENABLE = QAndroidJniObject::getStaticObjectField("android/content/Intent", "CATEGORY_OPENABLE", "Ljava/lang/String;");
-    //qCInfo(documentDialog, "CATEGORY_OPENABLE = %s", CATEGORY_OPENABLE.toString().toUtf8().constData());
-    //QAndroidJniObject CATEGORY_OPENABLE = AndroidConsts(env).stringConst("android/content/Intent", "CATEGORY_OPENABLE");
 
     QAndroidJniObject intent = QAndroidJniObject("android/content/Intent");
     if (selectFolder())
@@ -56,8 +58,7 @@ void DocumentDialogPrivateAndroid::open()
 //----------------------------------------------------------------------
 
 void DocumentDialogPrivateAndroid::handleActivityResult(int receiverRequestCode, int resultCode, const QAndroidJniObject &data)
-{
-    QAndroidJniEnvironment env;
+{ QAndroidJniEnvironment env;
     JniExceptionCheck check(env);
 
     qCInfo(documentDialog, "receiverRequestCode: %d resultCode: %d", receiverRequestCode, resultCode);
@@ -83,22 +84,6 @@ void DocumentDialogPrivateAndroid::handleActivityResult(int receiverRequestCode,
 
     QAndroidJniObject uri = data.callObjectMethod("getData", "()Landroid/net/Uri;" );
     qCInfo(documentDialog, "uri = %s", uri.toString().toUtf8().constData());
-
-    /*
-    QUrl fileUrl = uri.toString();
-    qCInfo(documentDialog, "fileUrl = %s", fileUrl.toString().toUtf8().constData());
-
-    jint flags = data.callMethod<jint>("getFlags", "()I");
-    qCInfo(documentDialog, "flags (before) = %d", flags);
-
-    flags &= (FLAG_GRANT_READ_URI_PERMISSION | FLAG_GRANT_WRITE_URI_PERMISSION);
-    //qDebug() << Q_FUNC_INFO << "flags: " << flags;
-    qCInfo(documentDialog, "flags (after) = %d", flags);
-
-    QAndroidJniObject contentResolver = QtAndroid::androidActivity().callObjectMethod("getContentResolver","()Landroid/content/ContentResolver;");
-    qCInfo(documentDialog, "contentResolver.isValid = %d", contentResolver.isValid());
-    contentResolver.callMethod<void>("takePersistableUriPermission","(Landroid/net/Uri;I)V", uri.object<jobject>(), flags);
-    */
 
     //setFileUrl(fileUrl);
     setFileUrl(uri.toString());

@@ -1,7 +1,13 @@
+//----------------------------------------------------------------------
+//
+//----------------------------------------------------------------------
+
 #include "ContentResolver.h"
 #include <QAndroidJniObject>
 #include <QAndroidJniEnvironment>
 #include <QtAndroid>
+#include "DocumentsContract.h"
+#include "DocumentsContractDocument.h"
 #include "JniExceptionCheck.h"
 
 //----------------------------------------------------------------------
@@ -18,15 +24,7 @@ ContentResolver::ContentResolver(QAndroidJniEnvironment& env, QObject* parent) :
 //
 //----------------------------------------------------------------------
 
-ContentResolver::~ContentResolver()
-{
-}
-
-//----------------------------------------------------------------------
-//
-//----------------------------------------------------------------------
-
-QStringList ContentResolver::query(const QString& uri, const QString& jclass, const QString& columnName)
+QStringList ContentResolver::query(const QString& uri, const QString& columnName)
 {
     JniExceptionCheck check(m_Env);
 
@@ -42,16 +40,14 @@ QStringList ContentResolver::query(const QString& uri, const QString& jclass, co
         return QStringList();
     }
 
-    QAndroidJniObject _contentResolver = contentResolver();
-    if ( !_contentResolver.isValid() )
+    QAndroidJniObject _columnName = QAndroidJniObject::fromString(columnName);
+    if ( !_columnName.isValid() )
     {
         return QStringList();
     }
 
-    QAndroidJniObject _columnName = QAndroidJniObject::getStaticObjectField<jstring>(
-                jclass.toUtf8().data(),
-                columnName.toUtf8().data() );
-    if ( !_columnName.isValid() )
+    QAndroidJniObject _contentResolver = contentResolver();
+    if ( !_contentResolver.isValid() )
     {
         return QStringList();
     }
@@ -146,6 +142,29 @@ QAndroidJniObject ContentResolver::contentResolver()
 
     m_ContentResolver = context.callObjectMethod( "getContentResolver", "()Landroid/content/ContentResolver;" );
     return m_ContentResolver;
+}
+
+//----------------------------------------------------------------------
+//
+//----------------------------------------------------------------------
+
+QString ContentResolver::queryForString(const QString& uri, const QString& columnName)
+{
+    QStringList results = query(uri, columnName);
+    QString result = results.length() > 0 ? results[0] : QString();
+    return result;
+}
+
+//----------------------------------------------------------------------
+//
+//----------------------------------------------------------------------
+
+qint64 ContentResolver::queryForLongLong(const QString& uri, const QString& columnName, qint64 defaultValue)
+{
+    QString resultString = queryForString(uri, columnName);
+    bool ok = false;
+    qint64 resultLongLong = resultString.toLongLong(&ok);
+    return ok ? resultLongLong : defaultValue;
 }
 
 //----------------------------------------------------------------------

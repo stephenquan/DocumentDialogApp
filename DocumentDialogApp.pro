@@ -38,6 +38,7 @@ android: {
     QT += androidextras
 
     SOURCES += \
+        AndroidObject.cpp \
         ContentResolver.cpp \
         ContentUris.cpp \
         DocumentDialogPrivateAndroid.cpp \
@@ -47,9 +48,11 @@ android: {
         InputStream.cpp
 
     HEADERS += \
+        AndroidObject.h \
         ContentResolver.h \
         ContentUris.h \
         DocumentsContract.h \
+        DocumentsContractDocument.h \
         DocumentDialogPrivateAndroid.h \
         FileFolderPrivateAndroid.h \
         FileInfoPrivateAndroid.h \

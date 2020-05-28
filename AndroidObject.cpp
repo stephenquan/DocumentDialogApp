@@ -2,47 +2,40 @@
 //
 //----------------------------------------------------------------------
 
-#ifndef __AppFramework__
-#define __AppFramework__
+#include "AndroidObject.h"
+#include <QAndroidJniObject>
+#include <QAndroidJniEnvironment>
+#include <QtAndroid>
+#include "JniExceptionCheck.h"
 
 //----------------------------------------------------------------------
 //
 //----------------------------------------------------------------------
 
-#include <QObject>
-#include <QQmlEngine>
-#include <QJSEngine>
-
-//----------------------------------------------------------------------
-//
-//----------------------------------------------------------------------
-
-class FileInfo;
-class FileFolder;
-
-//----------------------------------------------------------------------
-//
-//----------------------------------------------------------------------
-
-class AppFramework : public QObject
+AndroidObject::AndroidObject(QAndroidJniEnvironment& env, QObject* parent) :
+    QObject(parent),
+    m_Env(env)
 {
-    Q_OBJECT
-
-public:
-    AppFramework(QObject* parent = nullptr);
-
-    Q_INVOKABLE FileFolder* fileFolder(const QVariant& url);
-    Q_INVOKABLE FileInfo* fileInfo(const QVariant& url);
-
-    static QObject* singletonProvider(QQmlEngine *, QJSEngine *);
-
-};
+}
 
 //----------------------------------------------------------------------
 //
 //----------------------------------------------------------------------
 
-#endif
+QString AndroidObject::staticString(const QString& name) const
+{
+    return staticString(jclass(), name, m_Env);
+}
+
+//----------------------------------------------------------------------
+//
+//----------------------------------------------------------------------
+
+QString AndroidObject::staticString(const QString& jclass, const QString& name, QAndroidJniEnvironment& env)
+{
+    JniExceptionCheck check(env);
+    return QAndroidJniObject::getStaticObjectField<jstring>( jclass.toUtf8().data(), name.toUtf8().data() ).toString();
+}
 
 //----------------------------------------------------------------------
 //

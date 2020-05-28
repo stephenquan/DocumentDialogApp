@@ -1,17 +1,32 @@
+//----------------------------------------------------------------------
+//
+//----------------------------------------------------------------------
+
 #include "AppFramework.h"
 #include "FileFolder.h"
 #include "FileInfo.h"
+
+//----------------------------------------------------------------------
+//
+//----------------------------------------------------------------------
 
 AppFramework::AppFramework(QObject* parent) :
     QObject(parent)
 {
 }
 
+//----------------------------------------------------------------------
+//
+//----------------------------------------------------------------------
 
 QObject* AppFramework::singletonProvider(QQmlEngine *, QJSEngine *)
 {
     return new AppFramework();
 }
+
+//----------------------------------------------------------------------
+//
+//----------------------------------------------------------------------
 
 FileFolder* AppFramework::fileFolder(const QVariant& url)
 {
@@ -21,6 +36,10 @@ FileFolder* AppFramework::fileFolder(const QVariant& url)
     return fileFolder;
 }
 
+//----------------------------------------------------------------------
+//
+//----------------------------------------------------------------------
+
 FileInfo* AppFramework::fileInfo(const QVariant& url)
 {
     FileInfo* fileInfo = new FileInfo();
@@ -28,3 +47,7 @@ FileInfo* AppFramework::fileInfo(const QVariant& url)
     QQmlEngine::setObjectOwnership(fileInfo, QQmlEngine::JavaScriptOwnership);
     return fileInfo;
 }
+
+//----------------------------------------------------------------------
+//
+//----------------------------------------------------------------------

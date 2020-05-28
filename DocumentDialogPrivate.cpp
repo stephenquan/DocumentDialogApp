@@ -1,6 +1,18 @@
+//----------------------------------------------------------------------
+//
+//----------------------------------------------------------------------
+
 #include "DocumentDialogPrivate.h"
 
+//----------------------------------------------------------------------
+//
+//----------------------------------------------------------------------
+
 Q_LOGGING_CATEGORY(documentDialog, "stephenquan.DocumentDialog")
+
+//----------------------------------------------------------------------
+//
+//----------------------------------------------------------------------
 
 DocumentDialogPrivate::DocumentDialogPrivate(QObject* parent) :
     QObject(parent),
@@ -8,12 +20,20 @@ DocumentDialogPrivate::DocumentDialogPrivate(QObject* parent) :
 {
 }
 
+//----------------------------------------------------------------------
+//
+//----------------------------------------------------------------------
+
 void DocumentDialogPrivate::open()
 {
     qCDebug(documentDialog, "open");
 
     emit rejected();
 }
+
+//----------------------------------------------------------------------
+//
+//----------------------------------------------------------------------
 
 void DocumentDialogPrivate::setFileUrl(const QVariant& fileUrl)
 {
@@ -29,6 +49,10 @@ void DocumentDialogPrivate::setFileUrl(const QVariant& fileUrl)
     emit fileUrlChanged();
 }
 
+//----------------------------------------------------------------------
+//
+//----------------------------------------------------------------------
+
 void DocumentDialogPrivate::setSelectFolder(bool selectFolder)
 {
     if (selectFolder == m_SelectFolder)
@@ -38,7 +62,9 @@ void DocumentDialogPrivate::setSelectFolder(bool selectFolder)
 
     m_SelectFolder = selectFolder;
 
-    qCDebug(documentDialog, "selectFolder %s", selectFolder ? "true" : "false");
-
     emit selectFolderChanged();
 }
+
+//----------------------------------------------------------------------
+//
+//----------------------------------------------------------------------

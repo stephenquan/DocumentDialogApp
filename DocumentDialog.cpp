@@ -1,3 +1,7 @@
+//----------------------------------------------------------------------
+//
+//----------------------------------------------------------------------
+
 #include "DocumentDialog.h"
 #ifdef Q_OS_ANDROID
 #include "DocumentDialogPrivateAndroid.h"
@@ -5,6 +9,10 @@
 #ifndef Q_OS_ANDROID
 #include "DocumentDialogPrivate.h"
 #endif
+
+//----------------------------------------------------------------------
+//
+//----------------------------------------------------------------------
 
 DocumentDialog::DocumentDialog(QObject* parent) :
     QObject(parent)
@@ -21,6 +29,10 @@ DocumentDialog::DocumentDialog(QObject* parent) :
     connect(m_DocumentDialogPrivate, &DocumentDialogPrivate::rejected, this, &DocumentDialog::rejected);
 }
 
+//----------------------------------------------------------------------
+//
+//----------------------------------------------------------------------
+
 DocumentDialog::~DocumentDialog()
 {
     disconnect(m_DocumentDialogPrivate, &DocumentDialogPrivate::fileUrlChanged, this, &DocumentDialog::fileUrlChanged);
@@ -31,22 +43,42 @@ DocumentDialog::~DocumentDialog()
     m_DocumentDialogPrivate = nullptr;
 }
 
+//----------------------------------------------------------------------
+//
+//----------------------------------------------------------------------
+
 QVariant DocumentDialog::fileUrl() const
 {
     return m_DocumentDialogPrivate->fileUrl();
 }
+
+//----------------------------------------------------------------------
+//
+//----------------------------------------------------------------------
 
 bool DocumentDialog::selectFolder() const
 {
     return m_DocumentDialogPrivate->selectFolder();
 }
 
+//----------------------------------------------------------------------
+//
+//----------------------------------------------------------------------
+
 void DocumentDialog::setSelectFolder(bool selectFolder)
 {
     m_DocumentDialogPrivate->setSelectFolder(selectFolder);
 }
 
+//----------------------------------------------------------------------
+//
+//----------------------------------------------------------------------
+
 void DocumentDialog::open()
 {
     m_DocumentDialogPrivate->open();
 }
+
+//----------------------------------------------------------------------
+//
+//----------------------------------------------------------------------
