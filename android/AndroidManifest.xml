@@ -46,7 +46,7 @@
             <meta-data android:value="@string/fatal_error_msg" android:name="android.app.fatal_error_msg"/>
             <meta-data android:value="@string/unsupported_android_version" android:name="android.app.unsupported_android_version"/>
             <!--  Messages maps -->
-
+mport
             <!-- Splash screen -->
             <!-- Orientation-specific (portrait/landscape) data is checked first. If not available for current orientation,
                  then android.app.splash_screen_drawable. For best results, use together with splash_screen_sticky and

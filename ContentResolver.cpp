@@ -14,9 +14,32 @@
 //
 //----------------------------------------------------------------------
 
-ContentResolver::ContentResolver(QAndroidJniEnvironment& env, QObject* parent) :
-    QObject(parent),
-    m_Env(env)
+const char* ContentResolver::JCLASS = "android/content/ContentResolver";
+
+//----------------------------------------------------------------------
+//
+//----------------------------------------------------------------------
+
+ContentResolver::ContentResolver(QAndroidJniEnvironment& env) :
+    AndroidObject(env, JCLASS, contentResolver(env))
+{
+}
+
+//----------------------------------------------------------------------
+//
+//----------------------------------------------------------------------
+
+ContentResolver::ContentResolver(ContentResolver& other) :
+    AndroidObject(other.m_Env, JCLASS, other)
+{
+}
+
+//----------------------------------------------------------------------
+//
+//----------------------------------------------------------------------
+
+ContentResolver::ContentResolver(ContentResolver&& other) :
+    AndroidObject(other.m_Env, JCLASS, other)
 {
 }
 
@@ -27,6 +50,11 @@ ContentResolver::ContentResolver(QAndroidJniEnvironment& env, QObject* parent) :
 QStringList ContentResolver::query(const QString& uri, const QString& columnName)
 {
     JniExceptionCheck check(m_Env);
+
+    if (!isValid())
+    {
+        return QStringList();
+    }
 
     QAndroidJniObject urlString = QAndroidJniObject::fromString( uri );
 
@@ -46,16 +74,10 @@ QStringList ContentResolver::query(const QString& uri, const QString& columnName
         return QStringList();
     }
 
-    QAndroidJniObject _contentResolver = contentResolver();
-    if ( !_contentResolver.isValid() )
-    {
-        return QStringList();
-    }
-
     jobjectArray stringArray = m_Env->NewObjectArray( 1, m_Env->FindClass("java/lang/String"), nullptr);
     m_Env->SetObjectArrayElement( stringArray, 0, _columnName.object<jstring>() );
 
-    QAndroidJniObject cursor = _contentResolver.callObjectMethod(
+    QAndroidJniObject cursor = callObjectMethod(
             "query",
             "(Landroid/net/Uri;[Ljava/lang/String;Ljava/lang/String;[Ljava/lang/String;Ljava/lang/String;Landroid/os/CancellationSignal;)Landroid/database/Cursor;",
             _uri.object(),
@@ -91,6 +113,11 @@ InputStream ContentResolver::openInputStream(const QString& uri)
 {
     JniExceptionCheck check(m_Env);
 
+    if (!isValid())
+    {
+        return InputStream(m_Env);
+    }
+
     QAndroidJniObject _uri = QAndroidJniObject::fromString(uri);
     if (!_uri.isValid())
     {
@@ -107,41 +134,12 @@ InputStream ContentResolver::openInputStream(const QString& uri)
         return InputStream(m_Env);
     }
 
-    QAndroidJniObject _contentResolver = contentResolver();
-    if (!_contentResolver.isValid())
-    {
-        return InputStream(m_Env);
-    }
-
-    QAndroidJniObject _inputStream = _contentResolver.callObjectMethod(
+    QAndroidJniObject _inputStream = callObjectMethod(
                 "openInputStream",
                 "(Landroid/net/Uri;)Ljava/io/InputStream;",
                 __uri.object());
 
     return InputStream(m_Env, nullptr, _inputStream);
-}
-
-//----------------------------------------------------------------------
-//
-//----------------------------------------------------------------------
-
-QAndroidJniObject ContentResolver::contentResolver()
-{
-    JniExceptionCheck check(m_Env);
-
-    if (m_ContentResolver.isValid())
-    {
-        return m_ContentResolver;
-    }
-
-    QAndroidJniObject context = QtAndroid::androidContext();
-    if ( !context.isValid() )
-    {
-        return QAndroidJniObject();
-    }
-
-    m_ContentResolver = context.callObjectMethod( "getContentResolver", "()Landroid/content/ContentResolver;" );
-    return m_ContentResolver;
 }
 
 //----------------------------------------------------------------------
@@ -165,6 +163,26 @@ qint64 ContentResolver::queryForLongLong(const QString& uri, const QString& colu
     bool ok = false;
     qint64 resultLongLong = resultString.toLongLong(&ok);
     return ok ? resultLongLong : defaultValue;
+}
+
+//----------------------------------------------------------------------
+//
+//----------------------------------------------------------------------
+
+QAndroidJniObject ContentResolver::contentResolver(QAndroidJniEnvironment& env)
+{
+    JniExceptionCheck check(env);
+
+    QAndroidJniObject context = QtAndroid::androidContext();
+    if ( !context.isValid() )
+    {
+        return QAndroidJniObject();
+    }
+
+    QAndroidJniObject contentResolver = context.callObjectMethod(
+                "getContentResolver",
+                "()Landroid/content/ContentResolver;" );
+    return contentResolver;
 }
 
 //----------------------------------------------------------------------

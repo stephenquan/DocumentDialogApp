@@ -11,8 +11,6 @@
 
 #include <QObject>
 #include <QVariant>
-#include <QAndroidJniObject>
-#include <QAndroidJniEnvironment>
 #include "AndroidObject.h"
 
 //----------------------------------------------------------------------
@@ -21,31 +19,31 @@
 
 class DocumentsContract : public AndroidObject
 {
-    Q_OBJECT
-
 public:
-    DocumentsContract(QAndroidJniEnvironment& env, QObject* parent = nullptr);
+    DocumentsContract(QAndroidJniEnvironment& env, QAndroidJniObject obj = QAndroidJniObject());
 
-    virtual const char* jclass() const { return "android/provider/DocumentsContract"; }
+    static const char* JCLASS;
 
-    QString getDocumentId(const QString& uri) const;
-    QString getTreeDocumentId(const QString& uri) const;
-    QString buildChildDocumentsUri(const QString& authority, const QString& parentDocumentId) const;
-    QString buildChildDocumentsUriUsingTree(const QString& uri, const QString& documentId) const;
-    QString buildDocumentUri(const QString& authority, const QString& documentId) const;
-    QString buildDocumentUriUsingTree(const QString& uri, const QString& documentId) const;
-    QString buildTreeDocumentUri(const QString& authority, const QString& documentId) const;
-    bool isTreeUri(const QString& uri) const;
+    // DocumentContracts methods
+    static QString getDocumentId(QAndroidJniEnvironment& env, const QString& uri);
+    static QString getTreeDocumentId(QAndroidJniEnvironment& env, const QString& uri);
+    static QString buildChildDocumentsUri(QAndroidJniEnvironment& env, const QString& authority, const QString& parentDocumentId);
+    static QString buildChildDocumentsUriUsingTree(QAndroidJniEnvironment& env, const QString& uri, const QString& documentId);
+    static QString buildDocumentUri(QAndroidJniEnvironment& env, const QString& authority, const QString& documentId);
+    static QString buildDocumentUriUsingTree(QAndroidJniEnvironment& env, const QString& uri, const QString& documentId);
+    static QString buildTreeDocumentUri(QAndroidJniEnvironment& env, const QString& authority, const QString& documentId);
+    static bool isTreeUri(QAndroidJniEnvironment& env, const QString& uri);
 
-    QString mimeType(const QString& uri) const;
-    QString displayName(const QString& uri) const;
-    qint64 size(const QString& uri) const;
-    QStringList documentIds(const QString& uri) const;
-    bool exists(const QString& uri) const;
-    QStringList childDocumentIds(const QString& uri) const;
-    QStringList childDocumentUris(const QString& uri) const;
-    bool isFolder(const QString& uri) const;
-    bool isFile(const QString& uri) const;
+    // Helper methods
+    static QString mimeType(QAndroidJniEnvironment& env, const QString& uri);
+    static QString displayName(QAndroidJniEnvironment& env, const QString& uri);
+    static qint64 size(QAndroidJniEnvironment& env, const QString& uri);
+    static QStringList documentIds(QAndroidJniEnvironment& env, const QString& uri);
+    static bool exists(QAndroidJniEnvironment& env, const QString& uri);
+    static QStringList childDocumentIds(QAndroidJniEnvironment& env, const QString& uri);
+    static QStringList childDocumentUris(QAndroidJniEnvironment& env, const QString& uri);
+    static bool isDirectory(QAndroidJniEnvironment& env, const QString& uri);
+    static bool isFile(QAndroidJniEnvironment& env, const QString& uri);
 
 };
 

@@ -7,7 +7,7 @@
 #include "FileFolderPrivate.h"
 #endif
 #ifdef Q_OS_ANDROID
-#include "FileFolderPrivateAndroid.h"
+#include "FileFolderPrivateAndroid2.h"
 #endif
 
 //----------------------------------------------------------------------
@@ -20,7 +20,7 @@ FileFolder::FileFolder(QObject* parent) :
     , m_FileFolderPrivate(new FileFolderPrivate(this))
 #endif
 #ifdef Q_OS_ANDROID
-    , m_FileFolderPrivate(new FileFolderPrivateAndroid(this))
+    , m_FileFolderPrivate(new FileFolderPrivateAndroid2(this))
 #endif
 {
     connect(m_FileFolderPrivate, &FileFolderPrivate::fileFolderChanged, this, &FileFolder::fileFolderChanged);

@@ -3,8 +3,6 @@
 //----------------------------------------------------------------------
 
 #include "DocumentsContract.h"
-#include <QAndroidJniObject>
-#include <QAndroidJniEnvironment>
 #include <QtAndroid>
 #include "JniExceptionCheck.h"
 #include "ContentResolver.h"
@@ -14,8 +12,14 @@
 //
 //----------------------------------------------------------------------
 
-DocumentsContract::DocumentsContract(QAndroidJniEnvironment& env, QObject* parent) :
-    AndroidObject(env, parent)
+const char* DocumentsContract::JCLASS = "android/provider/DocumentsContract";
+
+//----------------------------------------------------------------------
+//
+//----------------------------------------------------------------------
+
+DocumentsContract::DocumentsContract(QAndroidJniEnvironment& env, QAndroidJniObject obj) :
+    AndroidObject(env, JCLASS, obj)
 {
 }
 
@@ -23,9 +27,9 @@ DocumentsContract::DocumentsContract(QAndroidJniEnvironment& env, QObject* paren
 //
 //----------------------------------------------------------------------
 
-QString DocumentsContract::getDocumentId(const QString& uri) const
+QString DocumentsContract::getDocumentId(QAndroidJniEnvironment& env, const QString& uri)
 {
-    JniExceptionCheck check(m_Env);
+    JniExceptionCheck check(env);
 
     QAndroidJniObject urlString = QAndroidJniObject::fromString( uri );
 
@@ -40,7 +44,7 @@ QString DocumentsContract::getDocumentId(const QString& uri) const
     }
 
     QAndroidJniObject documentId = QAndroidJniObject::callStaticObjectMethod(
-                jclass(),
+                DocumentsContract::JCLASS,
                 "getDocumentId",
                 "(Landroid/net/Uri;)Ljava/lang/String;",
                 _uri.object());
@@ -56,9 +60,9 @@ QString DocumentsContract::getDocumentId(const QString& uri) const
 //
 //----------------------------------------------------------------------
 
-QString DocumentsContract::getTreeDocumentId(const QString& uri) const
+QString DocumentsContract::getTreeDocumentId(QAndroidJniEnvironment& env, const QString& uri)
 {
-    JniExceptionCheck check(m_Env);
+    JniExceptionCheck check(env);
 
     QAndroidJniObject urlString = QAndroidJniObject::fromString( uri );
 
@@ -73,7 +77,7 @@ QString DocumentsContract::getTreeDocumentId(const QString& uri) const
     }
 
     QAndroidJniObject treeDocumentId = QAndroidJniObject::callStaticObjectMethod(
-                jclass(),
+                DocumentsContract::JCLASS,
                 "getTreeDocumentId",
                 "(Landroid/net/Uri;)Ljava/lang/String;",
                 _uri.object());
@@ -89,9 +93,9 @@ QString DocumentsContract::getTreeDocumentId(const QString& uri) const
 //
 //----------------------------------------------------------------------
 
-QString DocumentsContract::buildChildDocumentsUri(const QString& authority, const QString& parentDocumentId) const
+QString DocumentsContract::buildChildDocumentsUri(QAndroidJniEnvironment& env, const QString& authority, const QString& parentDocumentId)
 {
-    JniExceptionCheck check(m_Env);
+    JniExceptionCheck check(env);
 
     QAndroidJniObject _authority = QAndroidJniObject::fromString( authority );
     if ( !_authority.isValid() )
@@ -102,7 +106,7 @@ QString DocumentsContract::buildChildDocumentsUri(const QString& authority, cons
     QAndroidJniObject _parentDocumentId = QAndroidJniObject::fromString( parentDocumentId );
 
     QAndroidJniObject childDocumentsUri = QAndroidJniObject::callStaticObjectMethod(
-                jclass(),
+                DocumentsContract::JCLASS,
                 "buildChildDocumentsUri",
                 "(Ljava/lang/String;Ljava/lang/String;)Landroid/net/Uri;",
                 _authority.object(),
@@ -119,9 +123,9 @@ QString DocumentsContract::buildChildDocumentsUri(const QString& authority, cons
 //
 //----------------------------------------------------------------------
 
-QString DocumentsContract::buildChildDocumentsUriUsingTree(const QString& uri, const QString& documentId) const
+QString DocumentsContract::buildChildDocumentsUriUsingTree(QAndroidJniEnvironment& env, const QString& uri, const QString& documentId)
 {
-    JniExceptionCheck check(m_Env);
+    JniExceptionCheck check(env);
 
     QAndroidJniObject urlString = QAndroidJniObject::fromString( uri );
 
@@ -138,7 +142,7 @@ QString DocumentsContract::buildChildDocumentsUriUsingTree(const QString& uri, c
     QAndroidJniObject _documentId = QAndroidJniObject::fromString( documentId );
 
     QAndroidJniObject childDocumentsUri = QAndroidJniObject::callStaticObjectMethod(
-                jclass(),
+                DocumentsContract::JCLASS,
                 "buildChildDocumentsUriUsingTree",
                 "(Landroid/net/Uri;Ljava/lang/String;)Landroid/net/Uri;",
                 _uri.object(),
@@ -155,15 +159,15 @@ QString DocumentsContract::buildChildDocumentsUriUsingTree(const QString& uri, c
 //
 //----------------------------------------------------------------------
 
-QString DocumentsContract::buildDocumentUri(const QString& authority, const QString& documentId) const
+QString DocumentsContract::buildDocumentUri(QAndroidJniEnvironment& env, const QString& authority, const QString& documentId)
 {
-    JniExceptionCheck check(m_Env);
+    JniExceptionCheck check(env);
 
     QAndroidJniObject _authority = QAndroidJniObject::fromString( authority );
     QAndroidJniObject _documentId = QAndroidJniObject::fromString( documentId );
 
     QAndroidJniObject documentUri = QAndroidJniObject::callStaticObjectMethod(
-                jclass(),
+                DocumentsContract::JCLASS,
                 "buildDocumentUri",
                 "(Ljava/lang/String;Ljava/lang/String;)Landroid/net/Uri;",
                 _authority.object(),
@@ -180,9 +184,9 @@ QString DocumentsContract::buildDocumentUri(const QString& authority, const QStr
 //
 //----------------------------------------------------------------------
 
-QString DocumentsContract::buildDocumentUriUsingTree(const QString& uri, const QString& documentId) const
+QString DocumentsContract::buildDocumentUriUsingTree(QAndroidJniEnvironment& env, const QString& uri, const QString& documentId)
 {
-    JniExceptionCheck check(m_Env);
+    JniExceptionCheck check(env);
 
     QAndroidJniObject urlString = QAndroidJniObject::fromString( uri );
 
@@ -199,7 +203,7 @@ QString DocumentsContract::buildDocumentUriUsingTree(const QString& uri, const Q
     QAndroidJniObject _documentId = QAndroidJniObject::fromString( documentId );
 
     QAndroidJniObject documentsUri = QAndroidJniObject::callStaticObjectMethod(
-                jclass(),
+                JCLASS,
                 "buildDocumentUriUsingTree",
                 "(Landroid/net/Uri;Ljava/lang/String;)Landroid/net/Uri;",
                 _uri.object(),
@@ -216,15 +220,15 @@ QString DocumentsContract::buildDocumentUriUsingTree(const QString& uri, const Q
 //
 //----------------------------------------------------------------------
 
-QString DocumentsContract::buildTreeDocumentUri(const QString& authority, const QString& documentId) const
+QString DocumentsContract::buildTreeDocumentUri(QAndroidJniEnvironment& env, const QString& authority, const QString& documentId)
 {
-    JniExceptionCheck check(m_Env);
+    JniExceptionCheck check(env);
 
     QAndroidJniObject _authority = QAndroidJniObject::fromString( authority );
     QAndroidJniObject _documentId = QAndroidJniObject::fromString( documentId );
 
     QAndroidJniObject treeDocumentUri = QAndroidJniObject::callStaticObjectMethod(
-                jclass(),
+                DocumentsContract::JCLASS,
                 "buildTreeDocumentUri",
                 "(Ljava/lang/String;Ljava/lang/String;)Landroid/net/Uri;",
                 _authority.object(),
@@ -241,9 +245,9 @@ QString DocumentsContract::buildTreeDocumentUri(const QString& authority, const 
 //
 //----------------------------------------------------------------------
 
-bool DocumentsContract::isTreeUri(const QString& uri) const
+bool DocumentsContract::isTreeUri(QAndroidJniEnvironment& env, const QString& uri)
 {
-    JniExceptionCheck check(m_Env);
+    JniExceptionCheck check(env);
 
     QAndroidJniObject urlString = QAndroidJniObject::fromString( uri );
 
@@ -258,7 +262,7 @@ bool DocumentsContract::isTreeUri(const QString& uri) const
     }
 
     jboolean result = QAndroidJniObject::callStaticMethod<jboolean>(
-                jclass(),
+                DocumentsContract::JCLASS,
                 "isTreeUri",
                 "(Landroid/net/Uri;)Z",
                 _uri.object());
@@ -269,62 +273,63 @@ bool DocumentsContract::isTreeUri(const QString& uri) const
 //
 //----------------------------------------------------------------------
 
-QString DocumentsContract::mimeType(const QString& uri) const
+QString DocumentsContract::mimeType(QAndroidJniEnvironment& env, const QString& uri)
 {
-    return ContentResolver(m_Env).queryForString(uri, DocumentsContractDocument(m_Env).COLUMN_MIME_TYPE());
+    return ContentResolver(env).queryForString(uri, DocumentsContractDocument(env).COLUMN_MIME_TYPE());
 }
 
 //----------------------------------------------------------------------
 //
 //----------------------------------------------------------------------
 
-QString DocumentsContract::displayName(const QString& uri) const
+QString DocumentsContract::displayName(QAndroidJniEnvironment& env, const QString& uri)
 {
-    return ContentResolver(m_Env).queryForString(uri, DocumentsContractDocument(m_Env).COLUMN_DISPLAY_NAME());
+    return ContentResolver(env).queryForString(uri, DocumentsContractDocument(env).COLUMN_DISPLAY_NAME());
 }
 
 //----------------------------------------------------------------------
 //
 //----------------------------------------------------------------------
 
-qint64 DocumentsContract::size(const QString& uri) const
+qint64 DocumentsContract::size(QAndroidJniEnvironment& env, const QString& uri)
 {
-    return ContentResolver(m_Env).queryForLongLong(uri, DocumentsContractDocument(m_Env).COLUMN_DISPLAY_NAME(), 0);
+    return ContentResolver(env).queryForLongLong(uri, DocumentsContractDocument(env).COLUMN_DISPLAY_NAME(), 0);
 }
 
 //----------------------------------------------------------------------
 //
 //----------------------------------------------------------------------
 
-QStringList DocumentsContract::documentIds(const QString& uri) const
+QStringList DocumentsContract::documentIds(QAndroidJniEnvironment& env, const QString& uri)
 {
-    return ContentResolver(m_Env).query(uri, DocumentsContractDocument(m_Env).COLUMN_DOCUMENT_ID());
+    return ContentResolver(env).query(uri, DocumentsContractDocument(env).COLUMN_DOCUMENT_ID());
 }
 
 //----------------------------------------------------------------------
 //
 //----------------------------------------------------------------------
 
-bool DocumentsContract::exists(const QString& uri) const
+bool DocumentsContract::exists(QAndroidJniEnvironment& env, const QString& uri)
 {
-    return documentIds(uri).length() > 0;
+    return documentIds(env, uri).length() > 0;
 }
 
 //----------------------------------------------------------------------
 //
 //----------------------------------------------------------------------
 
-QStringList DocumentsContract::childDocumentIds(const QString& uri) const
+QStringList DocumentsContract::childDocumentIds(QAndroidJniEnvironment& env, const QString& uri)
 {
-    QString treeDocumentId = getTreeDocumentId(uri);
+    QString treeDocumentId = getTreeDocumentId(env, uri);
+    QString documentId = getDocumentId(env, uri);
 
-    QString childDocumentsUri = buildChildDocumentsUriUsingTree(uri, treeDocumentId);
+    QString childDocumentsUri = buildChildDocumentsUriUsingTree(env, uri, !treeDocumentId.isEmpty() ? treeDocumentId : documentId);
     if (childDocumentsUri.isEmpty() || childDocumentsUri.isNull())
     {
         return QStringList();
     }
 
-    QStringList result = ContentResolver(m_Env).query(childDocumentsUri,  DocumentsContractDocument(m_Env).COLUMN_DOCUMENT_ID());
+    QStringList result = ContentResolver(env).query(childDocumentsUri,  DocumentsContractDocument(env).COLUMN_DOCUMENT_ID());
     return result;
 }
 
@@ -332,12 +337,12 @@ QStringList DocumentsContract::childDocumentIds(const QString& uri) const
 //
 //----------------------------------------------------------------------
 
-QStringList DocumentsContract::childDocumentUris(const QString &uri) const
+QStringList DocumentsContract::childDocumentUris(QAndroidJniEnvironment& env, const QString &uri)
 {
     QStringList results;
-    foreach (const QString childDocumentId, childDocumentIds(uri))
+    foreach (const QString childDocumentId, childDocumentIds(env, uri))
     {
-        QString childDocumentUri = buildDocumentUriUsingTree(uri, childDocumentId);
+        QString childDocumentUri = buildDocumentUriUsingTree(env, uri, childDocumentId);
         results.append(childDocumentUri);
     }
     return results;
@@ -347,10 +352,10 @@ QStringList DocumentsContract::childDocumentUris(const QString &uri) const
 //
 //----------------------------------------------------------------------
 
-bool DocumentsContract::isFolder(const QString& uri) const
+bool DocumentsContract::isDirectory(QAndroidJniEnvironment& env, const QString& uri)
 {
-    QString type = mimeType(uri);
-    QString mimeTypeDir = DocumentsContractDocument(m_Env).MIME_TYPE_DIR();
+    QString type = mimeType(env, uri);
+    QString mimeTypeDir = DocumentsContractDocument(env).MIME_TYPE_DIR();
     bool result = (mimeTypeDir == type) || type.isEmpty() || type.isNull();
     return result;
 }
@@ -359,10 +364,10 @@ bool DocumentsContract::isFolder(const QString& uri) const
 //
 //----------------------------------------------------------------------
 
-bool DocumentsContract::isFile(const QString& uri) const
+bool DocumentsContract::isFile(QAndroidJniEnvironment& env, const QString& uri)
 {
-    QString type = ContentResolver(m_Env).queryForString(uri, DocumentsContractDocument(m_Env).COLUMN_MIME_TYPE());
-    QString mimeTypeDir = DocumentsContractDocument(m_Env).MIME_TYPE_DIR();
+    QString type = ContentResolver(env).queryForString(uri, DocumentsContractDocument(env).COLUMN_MIME_TYPE());
+    QString mimeTypeDir = DocumentsContractDocument(env).MIME_TYPE_DIR();
     bool result = (mimeTypeDir != type) && !type.isEmpty() && !type.isNull();
     return result;
 }
@@ -370,3 +375,4 @@ bool DocumentsContract::isFile(const QString& uri) const
 //----------------------------------------------------------------------
 //
 //----------------------------------------------------------------------
+

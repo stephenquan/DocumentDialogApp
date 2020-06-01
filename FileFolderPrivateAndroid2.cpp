@@ -3,9 +3,10 @@
 //----------------------------------------------------------------------
 
 #include <QAndroidJniEnvironment>
-#include "FileFolderPrivateAndroid.h"
+#include "FileFolderPrivateAndroid2.h"
 #include "ContentUris.h"
 #include "ContentResolver.h"
+#include "DocumentFile.h"
 #include "DocumentsContract.h"
 #include "DocumentsContractDocument.h"
 #include "JniExceptionCheck.h"
@@ -14,8 +15,9 @@
 //
 //----------------------------------------------------------------------
 
-FileFolderPrivateAndroid::FileFolderPrivateAndroid(QObject* parent) :
-    FileFolderPrivate(parent)
+FileFolderPrivateAndroid2::FileFolderPrivateAndroid2(QObject* parent) :
+    FileFolderPrivate(parent),
+    m_DocumentFile(nullptr)
 {
 }
 
@@ -23,30 +25,7 @@ FileFolderPrivateAndroid::FileFolderPrivateAndroid(QObject* parent) :
 //
 //----------------------------------------------------------------------
 
-QStringList FileFolderPrivateAndroid::fileNames(const QVariant& nameFilter, bool subFolders) const
-{
-    QAndroidJniEnvironment env;
-
-    if (!ContentUris::isContentUri(m_Path))
-    {
-        return FileFolderPrivate::fileNames();
-    }
-
-    if (!DocumentsContract::isTreeUri(env, m_Path))
-    {
-        return QStringList();
-    }
-
-    QStringList entryList;
-    names(entryList, m_Path, subFolders, true, nameFilter, subFolders, env);
-    return entryList;
-}
-
-//----------------------------------------------------------------------
-//
-//----------------------------------------------------------------------
-
-QStringList FileFolderPrivateAndroid::folderNames(const QVariant& nameFilter, bool subFolders) const
+QStringList FileFolderPrivateAndroid2::fileNames(const QVariant& nameFilter, bool subFolders) const
 {
     QAndroidJniEnvironment env;
 
@@ -55,13 +34,8 @@ QStringList FileFolderPrivateAndroid::folderNames(const QVariant& nameFilter, bo
         return FileFolderPrivate::fileNames();
     }
 
-    if (!DocumentsContract::isTreeUri(env, m_Path))
-    {
-        return QStringList();
-    }
-
     QStringList entryList;
-    names(entryList, m_Path, subFolders, false, nameFilter, subFolders, env);
+    names(entryList, url().toString(), subFolders, true, nameFilter, subFolders, env);
     return entryList;
 }
 
@@ -69,7 +43,25 @@ QStringList FileFolderPrivateAndroid::folderNames(const QVariant& nameFilter, bo
 //
 //----------------------------------------------------------------------
 
-QString FileFolderPrivateAndroid::filePath(const QString& fileName) const
+QStringList FileFolderPrivateAndroid2::folderNames(const QVariant& nameFilter, bool subFolders) const
+{
+    QAndroidJniEnvironment env;
+
+    if (!ContentUris::isContentUri(m_Path))
+    {
+        return FileFolderPrivate::fileNames();
+    }
+
+    QStringList entryList;
+    names(entryList, url().toString(), subFolders, false, nameFilter, subFolders, env);
+    return entryList;
+}
+
+//----------------------------------------------------------------------
+//
+//----------------------------------------------------------------------
+
+QString FileFolderPrivateAndroid2::filePath(const QString& fileName) const
 {
     if (!ContentUris::isContentUri(m_Path))
     {
@@ -83,7 +75,7 @@ QString FileFolderPrivateAndroid::filePath(const QString& fileName) const
 //
 //----------------------------------------------------------------------
 
-QVariant FileFolderPrivateAndroid::fileUrl(const QString& fileName) const
+QVariant FileFolderPrivateAndroid2::fileUrl(const QString& fileName) const
 {
     if (!ContentUris::isContentUri(m_Path))
     {
@@ -97,31 +89,37 @@ QVariant FileFolderPrivateAndroid::fileUrl(const QString& fileName) const
 //
 //----------------------------------------------------------------------
 
-void FileFolderPrivateAndroid::names(QStringList& entryList, const QString& uri, const bool recurse, bool files, const QVariant& nameFilter, bool subFolders, QAndroidJniEnvironment& env) const
+void FileFolderPrivateAndroid2::names(QStringList& entryList, const QString& uri, const bool recurse, bool files, const QVariant& nameFilter, bool subFolders, QAndroidJniEnvironment& env) const
 {
     Q_UNUSED(recurse)
     Q_UNUSED(nameFilter)
     Q_UNUSED(subFolders)
 
-    QStringList childDocumentUris = DocumentsContract::childDocumentUris(env, uri);
-
-    foreach (QString childDocumentUri, childDocumentUris)
+    DocumentFile documentFile = DocumentFile::fromUri(env, uri);
+    if (!documentFile.isValid())
     {
-        bool isFile = DocumentsContract::isFile(env, childDocumentUri);
+        return;
+    }
+
+    QStringList fileUris = documentFile.listFiles();
+
+    foreach (QString fileUri, fileUris)
+    {
+        bool isFile = DocumentsContract::isFile(env, fileUri);
         if (isFile)
         {
             if (files)
             {
-                entryList.append(childDocumentUri);
+                entryList.append(fileUri);
             }
         }
 
-        bool isFolder = DocumentsContract::isDirectory(env, childDocumentUri);
+        bool isFolder = DocumentsContract::isDirectory(env, fileUri);
         if (isFolder)
         {
             if (!files)
             {
-                entryList.append(childDocumentUri);
+                entryList.append(fileUri);
             }
         }
     }
@@ -131,7 +129,7 @@ void FileFolderPrivateAndroid::names(QStringList& entryList, const QString& uri,
 //
 //----------------------------------------------------------------------
 
-QVariant FileFolderPrivateAndroid::url() const
+QVariant FileFolderPrivateAndroid2::url() const
 {
     return path();
 }
@@ -140,8 +138,12 @@ QVariant FileFolderPrivateAndroid::url() const
 //
 //----------------------------------------------------------------------
 
-void FileFolderPrivateAndroid::setUrl(const QVariant& url)
+void FileFolderPrivateAndroid2::setUrl(const QVariant& url)
 {
+    QAndroidJniEnvironment env;
+
+    JniExceptionCheck check(env);
+
     setPath(url.toString());
 }
 

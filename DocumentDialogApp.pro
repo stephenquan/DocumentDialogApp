@@ -42,8 +42,11 @@ android: {
         ContentResolver.cpp \
         ContentUris.cpp \
         DocumentDialogPrivateAndroid.cpp \
+        DocumentFile.cpp \
         DocumentsContract.cpp \
+        DocumentsContractDocument.cpp \
         FileFolderPrivateAndroid.cpp \
+        FileFolderPrivateAndroid2.cpp \
         FileInfoPrivateAndroid.cpp \
         InputStream.cpp
 
@@ -51,12 +54,15 @@ android: {
         AndroidObject.h \
         ContentResolver.h \
         ContentUris.h \
+        DocumentDialogPrivateAndroid.h \
+        DocumentFile.h \
         DocumentsContract.h \
         DocumentsContractDocument.h \
-        DocumentDialogPrivateAndroid.h \
         FileFolderPrivateAndroid.h \
+        FileFolderPrivateAndroid2.h \
         FileInfoPrivateAndroid.h \
         InputStream.h
+
 }
 
 RESOURCES += qml.qrc
@@ -84,4 +90,6 @@ DISTFILES += \
 contains(ANDROID_TARGET_ARCH,arm64-v8a) {
     ANDROID_PACKAGE_SOURCE_DIR = \
         $$PWD/android
+
+    OTHER_FILES += $$files("*.java", "true")
 }

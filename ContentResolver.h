@@ -13,31 +13,28 @@
 #include <QVariant>
 #include <QAndroidJniObject>
 #include <QAndroidJniEnvironment>
+#include "AndroidObject.h"
 #include "InputStream.h"
 
 //----------------------------------------------------------------------
 //
 //----------------------------------------------------------------------
 
-class ContentResolver : public QObject
+class ContentResolver : public AndroidObject
 {
-    Q_OBJECT
-
 public:
-    ContentResolver(QAndroidJniEnvironment& env, QObject* parent = nullptr);
+    ContentResolver(QAndroidJniEnvironment& env);
+    ContentResolver(ContentResolver& other);
+    ContentResolver(ContentResolver&& other);
+
+    static const char* JCLASS;
 
     QStringList query(const QString& uri, const QString& columnName);
-
     QString queryForString(const QString& uri, const QString& columnName);
     qint64 queryForLongLong(const QString& uri, const QString& columnName, qint64 defaultValue);
-
     InputStream openInputStream(const QString& uri);
 
-protected:
-    QAndroidJniEnvironment& m_Env;
-    QAndroidJniObject m_ContentResolver;
-
-    QAndroidJniObject contentResolver();
+    static QAndroidJniObject contentResolver(QAndroidJniEnvironment& env);
 
 };
 

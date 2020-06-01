@@ -17,6 +17,7 @@ repositories {
 apply plugin: 'com.android.application'
 
 dependencies {
+    implementation "androidx.annotation:annotation:1.1.0"
     implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
 }
 
