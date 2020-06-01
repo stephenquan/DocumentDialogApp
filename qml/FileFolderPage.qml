@@ -42,41 +42,44 @@ Page {
         model: listModel
         clip: true
 
-        delegate: RowLayout {
+        delegate: Item {
             width: listView.width
+            height: rowLayout.height
 
-            Item {
-                Layout.preferredWidth: 32
-                Layout.preferredHeight: 32
+            RowLayout {
+                id: rowLayout
+
+                width: parent.width
 
                 Image {
-                    anchors.fill: parent
+                    Layout.preferredWidth: 32
+                    Layout.preferredHeight: 32
 
                     source: iconSource
                 }
 
-                MouseArea {
-                    anchors.fill: parent
-
-                    onClicked: {
-                        if (linkFolderUrl !== "") {
-                            openFileFolderPage(linkFolderUrl);
-                            return;
-                        }
-
-                        if (linkFileUrl !== "") {
-                            openFileInfoPage(linkFileUrl);
-                            return;
-                        }
-                    }
+                Text {
+                    Layout.fillWidth: true
+                    text: displayName
+                    font.pointSize: 12
+                    wrapMode: Text.WrapAtWordBoundaryOrAnywhere
                 }
             }
 
-            Text {
-                Layout.fillWidth: true
-                text: qsTr("%1 (%2)").arg(displayName).arg(JSON.stringify(fileUrl))
-                font.pointSize: 12
-                wrapMode: Text.WrapAtWordBoundaryOrAnywhere
+            MouseArea {
+                anchors.fill: parent
+
+                onClicked: {
+                    if (linkFolderUrl !== "") {
+                        openFileFolderPage(linkFolderUrl);
+                        return;
+                    }
+
+                    if (linkFileUrl !== "") {
+                        openFileInfoPage(linkFileUrl);
+                        return;
+                    }
+                }
             }
         }
     }
