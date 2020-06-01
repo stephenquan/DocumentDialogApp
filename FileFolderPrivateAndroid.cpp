@@ -63,12 +63,27 @@ QStringList FileFolderPrivateAndroid::folderNames(const QVariant& nameFilter, bo
 
 QString FileFolderPrivateAndroid::filePath(const QString& fileName) const
 {
+    QAndroidJniEnvironment env;
+    JniExceptionCheck check(env);
+
     if (!ContentUris::isContentUri(m_Path))
     {
         return FileFolderPrivate::filePath(fileName);
     }
 
-    return fileName;
+    DocumentFile parentDocumentFile = DocumentFile::fromUri(env, url().toString());
+    if (!parentDocumentFile.isValid())
+    {
+        return QString();
+    }
+
+    DocumentFile documentFile = parentDocumentFile.findFile(fileName);
+    if (!documentFile.isValid())
+    {
+        return QString();
+    }
+
+    return documentFile.getUri();
 }
 
 //----------------------------------------------------------------------
@@ -77,12 +92,27 @@ QString FileFolderPrivateAndroid::filePath(const QString& fileName) const
 
 QVariant FileFolderPrivateAndroid::fileUrl(const QString& fileName) const
 {
+    QAndroidJniEnvironment env;
+    JniExceptionCheck check(env);
+
     if (!ContentUris::isContentUri(m_Path))
     {
         return FileFolderPrivate::filePath(fileName);
     }
 
-    return fileName;
+    DocumentFile parentDocumentFile = DocumentFile::fromUri(env, url().toString());
+    if (!parentDocumentFile.isValid())
+    {
+        return QVariant();
+    }
+
+    DocumentFile documentFile = parentDocumentFile.findFile(fileName);
+    if (!documentFile.isValid())
+    {
+        return QVariant();
+    }
+
+    return documentFile.getUri();
 }
 
 //----------------------------------------------------------------------
@@ -94,31 +124,32 @@ void FileFolderPrivateAndroid::names(QAndroidJniEnvironment& env, QStringList& e
     Q_UNUSED(recurse)
     Q_UNUSED(nameFilter)
 
-    DocumentFile documentFile = DocumentFile::fromUri(env, uri);
-    if (!documentFile.isValid())
+    DocumentFile parentDocumentFile = DocumentFile::fromUri(env, uri);
+    if (!parentDocumentFile.isValid())
     {
         return;
     }
 
-    QStringList fileUris = documentFile.listFiles();
+    QStringList fileUris = parentDocumentFile.listFiles();
 
     foreach (QString fileUri, fileUris)
     {
-        bool isFile = DocumentsContract::isFile(env, fileUri);
+        DocumentFile documentFile = DocumentFile::fromUri(env, fileUri);
+        bool isFile = documentFile.isFile();
         if (isFile)
         {
             if (files)
             {
-                entryList.append(fileUri);
+                entryList.append(documentFile.getName());
             }
         }
 
-        bool isFolder = DocumentsContract::isDirectory(env, fileUri);
+        bool isFolder = documentFile.isDirectory();
         if (isFolder)
         {
             if (!files)
             {
-                entryList.append(fileUri);
+                entryList.append(documentFile.getName());
             }
         }
     }
@@ -139,10 +170,6 @@ QVariant FileFolderPrivateAndroid::url() const
 
 void FileFolderPrivateAndroid::setUrl(const QVariant& url)
 {
-    QAndroidJniEnvironment env;
-
-    JniExceptionCheck check(env);
-
     setPath(url.toString());
 }
 
