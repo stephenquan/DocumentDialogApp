@@ -19,12 +19,12 @@
 //
 //----------------------------------------------------------------------
 
-class FileFolderPrivateAndroid2 : public FileFolderPrivate
+class FileFolderPrivateAndroid : public FileFolderPrivate
 {
     Q_OBJECT
 
 public:
-    FileFolderPrivateAndroid2(QObject* parent = nullptr);
+    FileFolderPrivateAndroid(QObject* parent = nullptr);
 
     virtual QStringList fileNames(const QVariant& nameFilter = QStringLiteral("*"), bool subFolders = false) const Q_DECL_OVERRIDE;
     virtual QStringList folderNames(const QVariant& nameFilter = QStringLiteral("*"), bool subFolders = false) const Q_DECL_OVERRIDE;

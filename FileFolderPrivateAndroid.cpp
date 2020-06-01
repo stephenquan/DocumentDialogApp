@@ -3,7 +3,7 @@
 //----------------------------------------------------------------------
 
 #include <QAndroidJniEnvironment>
-#include "FileFolderPrivateAndroid2.h"
+#include "FileFolderPrivateAndroid.h"
 #include "ContentUris.h"
 #include "ContentResolver.h"
 #include "DocumentFile.h"
@@ -15,7 +15,7 @@
 //
 //----------------------------------------------------------------------
 
-FileFolderPrivateAndroid2::FileFolderPrivateAndroid2(QObject* parent) :
+FileFolderPrivateAndroid::FileFolderPrivateAndroid(QObject* parent) :
     FileFolderPrivate(parent),
     m_DocumentFile(nullptr)
 {
@@ -25,7 +25,7 @@ FileFolderPrivateAndroid2::FileFolderPrivateAndroid2(QObject* parent) :
 //
 //----------------------------------------------------------------------
 
-QStringList FileFolderPrivateAndroid2::fileNames(const QVariant& nameFilter, bool subFolders) const
+QStringList FileFolderPrivateAndroid::fileNames(const QVariant& nameFilter, bool subFolders) const
 {
     QAndroidJniEnvironment env;
 
@@ -43,7 +43,7 @@ QStringList FileFolderPrivateAndroid2::fileNames(const QVariant& nameFilter, boo
 //
 //----------------------------------------------------------------------
 
-QStringList FileFolderPrivateAndroid2::folderNames(const QVariant& nameFilter, bool subFolders) const
+QStringList FileFolderPrivateAndroid::folderNames(const QVariant& nameFilter, bool subFolders) const
 {
     QAndroidJniEnvironment env;
 
@@ -61,7 +61,7 @@ QStringList FileFolderPrivateAndroid2::folderNames(const QVariant& nameFilter, b
 //
 //----------------------------------------------------------------------
 
-QString FileFolderPrivateAndroid2::filePath(const QString& fileName) const
+QString FileFolderPrivateAndroid::filePath(const QString& fileName) const
 {
     if (!ContentUris::isContentUri(m_Path))
     {
@@ -75,7 +75,7 @@ QString FileFolderPrivateAndroid2::filePath(const QString& fileName) const
 //
 //----------------------------------------------------------------------
 
-QVariant FileFolderPrivateAndroid2::fileUrl(const QString& fileName) const
+QVariant FileFolderPrivateAndroid::fileUrl(const QString& fileName) const
 {
     if (!ContentUris::isContentUri(m_Path))
     {
@@ -89,7 +89,7 @@ QVariant FileFolderPrivateAndroid2::fileUrl(const QString& fileName) const
 //
 //----------------------------------------------------------------------
 
-void FileFolderPrivateAndroid2::names(QAndroidJniEnvironment& env, QStringList& entryList, const QString& uri, const QVariant& nameFilter, const bool recurse, bool files) const
+void FileFolderPrivateAndroid::names(QAndroidJniEnvironment& env, QStringList& entryList, const QString& uri, const QVariant& nameFilter, const bool recurse, bool files) const
 {
     Q_UNUSED(recurse)
     Q_UNUSED(nameFilter)
@@ -128,7 +128,7 @@ void FileFolderPrivateAndroid2::names(QAndroidJniEnvironment& env, QStringList& 
 //
 //----------------------------------------------------------------------
 
-QVariant FileFolderPrivateAndroid2::url() const
+QVariant FileFolderPrivateAndroid::url() const
 {
     return path();
 }
@@ -137,7 +137,7 @@ QVariant FileFolderPrivateAndroid2::url() const
 //
 //----------------------------------------------------------------------
 
-void FileFolderPrivateAndroid2::setUrl(const QVariant& url)
+void FileFolderPrivateAndroid::setUrl(const QVariant& url)
 {
     QAndroidJniEnvironment env;
 
