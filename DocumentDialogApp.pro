@@ -45,7 +45,6 @@ android: {
         DocumentFile.cpp \
         DocumentsContract.cpp \
         DocumentsContractDocument.cpp \
-        FileFolderPrivateAndroid.cpp \
         FileFolderPrivateAndroid2.cpp \
         FileInfoPrivateAndroid.cpp \
         InputStream.cpp
@@ -58,7 +57,6 @@ android: {
         DocumentFile.h \
         DocumentsContract.h \
         DocumentsContractDocument.h \
-        FileFolderPrivateAndroid.h \
         FileFolderPrivateAndroid2.h \
         FileInfoPrivateAndroid.h \
         InputStream.h
