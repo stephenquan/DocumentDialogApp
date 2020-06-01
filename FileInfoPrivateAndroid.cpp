@@ -15,6 +15,7 @@
 #include "DocumentsContract.h"
 #include "DocumentsContractDocument.h"
 #include "JniExceptionCheck.h"
+#include "DocumentFile.h"
 
 //----------------------------------------------------------------------
 //
@@ -73,12 +74,15 @@ QString FileInfoPrivateAndroid::baseName() const
 
 bool FileInfoPrivateAndroid::exists() const
 {
+    QAndroidJniEnvironment env;
+
     if (!ContentUris::isContentUri(url().toString()))
     {
         return FileInfoPrivate::exists();
     }
 
-    return isFile() || isDir();
+    DocumentFile documentFile = DocumentFile::fromUri(env, url().toString());
+    return documentFile.exists();
 }
 
 //----------------------------------------------------------------------
@@ -94,8 +98,8 @@ QString FileInfoPrivateAndroid::displayName() const
         return FileInfoPrivate::displayName();
     }
 
-    QString displayName = DocumentsContract::displayName(env, url().toString());
-    return displayName;
+    DocumentFile documentFile = DocumentFile::fromUri(env, url().toString());
+    return documentFile.getName();
 }
 
 //----------------------------------------------------------------------
@@ -104,12 +108,15 @@ QString FileInfoPrivateAndroid::displayName() const
 
 QString FileInfoPrivateAndroid::fileName() const
 {
+    QAndroidJniEnvironment env;
+
     if (!ContentUris::isContentUri(url().toString()))
     {
         return FileInfoPrivate::fileName();
     }
 
-    return m_Url.toString();
+    DocumentFile documentFile = DocumentFile::fromUri(env, url().toString());
+    return documentFile.getName();
 }
 
 //----------------------------------------------------------------------
@@ -132,26 +139,27 @@ QString FileInfoPrivateAndroid::filePath() const
 
 FileFolder* FileInfoPrivateAndroid::folder() const
 {
+    QAndroidJniEnvironment env;
+
     if (!ContentUris::isContentUri(url().toString()))
     {
         return FileInfoPrivate::folder();
     }
 
-    QString contentUri = url().toString();
-    QString scheme;
-    QString authority;
-    QString treeOrDocument;
-    QString type;
-    QStringList path;
-    if (!ContentUris::parseContentUri(contentUri, scheme, authority, treeOrDocument, type, path))
+    DocumentFile documentFile = DocumentFile::fromUri(env, url().toString());
+    if (!documentFile.isValid())
     {
         return nullptr;
     }
-    path.pop_back();
-    QString treeDocumentUri = ContentUris::buildContentUri(scheme, authority, "tree", type, path);
+
+    DocumentFile parentFile = documentFile.getParentFile();
+    if (!parentFile.isValid())
+    {
+        return nullptr;
+    }
 
     FileFolder* fileFolder = new FileFolder();
-    fileFolder->setPath(treeDocumentUri);
+    fileFolder->setPath(parentFile.getUri());
     QQmlEngine::setObjectOwnership(fileFolder, QQmlEngine::JavaScriptOwnership);
     return fileFolder;
 }
@@ -163,12 +171,14 @@ FileFolder* FileInfoPrivateAndroid::folder() const
 bool FileInfoPrivateAndroid::isDir() const
 {
     QAndroidJniEnvironment env;
+
     if (!ContentUris::isContentUri(url().toString()))
     {
         return FileInfoPrivate::isDir();
     }
 
-    return DocumentsContract::isDirectory(env, url().toString());
+    DocumentFile documentFile = DocumentFile::fromUri(env, url().toString());
+    return documentFile.isDirectory();
 }
 
 //----------------------------------------------------------------------
@@ -184,7 +194,8 @@ bool FileInfoPrivateAndroid::isFile() const
         return FileInfoPrivate::isDir();
     }
 
-    return DocumentsContract::isFile(env, url().toString());
+    DocumentFile documentFile = DocumentFile::fromUri(env, url().toString());
+    return documentFile.isFile();
 }
 
 //----------------------------------------------------------------------
@@ -200,7 +211,8 @@ qint64 FileInfoPrivateAndroid::size() const
         return FileInfoPrivate::size();
     }
 
-    return DocumentsContract::size(env, url().toString());
+    DocumentFile documentFile = DocumentFile::fromUri(env, url().toString());
+    return documentFile.length();
 }
 
 //----------------------------------------------------------------------
@@ -210,7 +222,6 @@ qint64 FileInfoPrivateAndroid::size() const
 QByteArray FileInfoPrivateAndroid::readAll() const
 {
     QAndroidJniEnvironment env;
-    JniExceptionCheck check(env);
 
     if (!ContentUris::isContentUri(url().toString()))
     {
@@ -248,10 +259,10 @@ QByteArray FileInfoPrivateAndroid::readAll() const
 
 void FileInfoPrivateAndroid::setUrl(const QVariant& url)
 {
-    QString _url = url.toString();
-
     QAndroidJniEnvironment env;
     JniExceptionCheck check(env);
+
+    QString _url = url.toString();
 
     if (!ContentUris::isContentUri(_url))
     {
@@ -280,6 +291,8 @@ QVariant FileInfoPrivateAndroid::extra() const
     {
         return FileInfoPrivate::extra();
     }
+
+    return QVariant();
 
     QString _uri = url().toString();
 

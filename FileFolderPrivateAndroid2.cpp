@@ -35,7 +35,7 @@ QStringList FileFolderPrivateAndroid2::fileNames(const QVariant& nameFilter, boo
     }
 
     QStringList entryList;
-    names(entryList, url().toString(), subFolders, true, nameFilter, subFolders, env);
+    names(env, entryList, url().toString(), nameFilter, subFolders, true);
     return entryList;
 }
 
@@ -53,7 +53,7 @@ QStringList FileFolderPrivateAndroid2::folderNames(const QVariant& nameFilter, b
     }
 
     QStringList entryList;
-    names(entryList, url().toString(), subFolders, false, nameFilter, subFolders, env);
+    names(env, entryList, url().toString(), nameFilter, subFolders, false);
     return entryList;
 }
 
@@ -89,11 +89,10 @@ QVariant FileFolderPrivateAndroid2::fileUrl(const QString& fileName) const
 //
 //----------------------------------------------------------------------
 
-void FileFolderPrivateAndroid2::names(QStringList& entryList, const QString& uri, const bool recurse, bool files, const QVariant& nameFilter, bool subFolders, QAndroidJniEnvironment& env) const
+void FileFolderPrivateAndroid2::names(QAndroidJniEnvironment& env, QStringList& entryList, const QString& uri, const QVariant& nameFilter, const bool recurse, bool files) const
 {
     Q_UNUSED(recurse)
     Q_UNUSED(nameFilter)
-    Q_UNUSED(subFolders)
 
     DocumentFile documentFile = DocumentFile::fromUri(env, uri);
     if (!documentFile.isValid())

@@ -31,7 +31,7 @@ public:
     virtual QString filePath(const QString& fileName) const Q_DECL_OVERRIDE;
     virtual QVariant fileUrl(const QString& fileName) const Q_DECL_OVERRIDE;
 
-    void names(QStringList& entryList, const QString& uri, const bool recurse, bool files, const QVariant&nameFilter, bool subFolders, QAndroidJniEnvironment& env) const;
+    void names(QAndroidJniEnvironment& env, QStringList& entryList, const QString& uri, const QVariant&nameFilter, const bool recurse, bool files) const;
 
     virtual QVariant url() const Q_DECL_OVERRIDE;
     virtual void setUrl(const QVariant& url) Q_DECL_OVERRIDE;

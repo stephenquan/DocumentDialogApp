@@ -132,7 +132,7 @@ DocumentFile DocumentFile::fromTreeUri(QAndroidJniEnvironment& env, const QStrin
 
 DocumentFile DocumentFile::fromUri(QAndroidJniEnvironment& env, const QString& uri)
 {
-    if (DocumentsContract::isDirectory(env, uri))
+    if (DocumentsContract::isTreeUri(env, uri))
     {
         return fromTreeUri(env, uri);
     }
@@ -425,7 +425,7 @@ qint64 DocumentFile::length() const
         return false;
     }
 
-    jlong result = callMethod<jboolean>(
+    jlong result = callMethod<jlong>(
                 "length",
                 "()J"
                 );
