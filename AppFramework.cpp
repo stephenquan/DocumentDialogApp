@@ -5,6 +5,7 @@
 #include "AppFramework.h"
 #include "FileFolder.h"
 #include "FileInfo.h"
+#include <QDebug>
 
 //----------------------------------------------------------------------
 //
@@ -46,6 +47,15 @@ FileInfo* AppFramework::fileInfo(const QVariant& url)
     fileInfo->setUrl(url);
     QQmlEngine::setObjectOwnership(fileInfo, QQmlEngine::JavaScriptOwnership);
     return fileInfo;
+}
+
+//----------------------------------------------------------------------
+//
+//----------------------------------------------------------------------
+
+QString AppFramework::btoa(const QVariant& data)
+{
+    return data.toByteArray().toBase64();
 }
 
 //----------------------------------------------------------------------

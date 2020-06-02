@@ -33,6 +33,7 @@ public:
 
     Q_INVOKABLE FileFolder* fileFolder(const QVariant& url);
     Q_INVOKABLE FileInfo* fileInfo(const QVariant& url);
+    Q_INVOKABLE QString btoa(const QVariant& data);
 
     static QObject* singletonProvider(QQmlEngine *, QJSEngine *);
 

@@ -8,69 +8,130 @@ Page {
     id: fileInfoPage
 
     property var url
+    property var imageUrl
 
     onUrlChanged: refresh()
 
-    ListView {
-        id: listView
+    Flickable {
+        id: flickable
 
         anchors.fill: parent
         anchors.margins: 10
 
-        model: listModel
+        contentWidth: columnLayout.width
+        contentHeight: columnLayout.height
         clip: true
 
-        delegate: Frame {
-            width: listView.width
+        ColumnLayout {
+            id: columnLayout
 
-            ColumnLayout {
-                width: parent.width
+            width: flickable.width
 
-                Text {
+            Repeater {
+                model: listModel
+
+                Frame {
                     Layout.fillWidth: true
 
-                    text: infoLabel
-                    font.pointSize: 12
-                    font.bold: true
-                    wrapMode: Text.WrapAtWordBoundaryOrAnywhere
+                    ColumnLayout {
+                        width: parent.width
+
+                        Text {
+                            Layout.fillWidth: true
+
+                            text: infoLabel
+                            font.pointSize: 12
+                            font.bold: true
+                            wrapMode: Text.WrapAtWordBoundaryOrAnywhere
+                        }
+
+                        RowLayout {
+                            Layout.fillWidth: true
+
+                            Text {
+                                Layout.fillWidth: true
+
+                                text: infoValue
+                                font.pointSize: 12
+                                wrapMode: Text.WrapAtWordBoundaryOrAnywhere
+                            }
+
+                            Item {
+                                Layout.preferredWidth: 32
+                                Layout.preferredHeight: 32
+
+                                visible: folderPath !== ""
+
+                                Image {
+                                    id: folderImage
+                                    anchors.fill: parent
+                                    source: "Images/folder-32.svg"
+                                }
+
+                                ColorOverlay {
+                                    anchors.fill: folderImage
+                                    source: folderImage
+                                    color: "black"
+                                }
+
+                                MouseArea {
+                                    anchors.fill: parent
+
+                                    onClicked: openFileFolderPage(folderPath)
+                                }
+                            }
+
+                        }
+                    }
                 }
+            }
 
-                RowLayout {
-                    Layout.fillWidth: true
+            Frame {
+                visible: imageUrl
+
+                Layout.fillWidth: true
+
+                ColumnLayout {
+                    width: parent.width
 
                     Text {
+                        text: qsTr("Image")
+                        font.pointSize: 12
+                        font.bold: true
+                    }
+
+                    Image {
+                        id: image
+
+                        Layout.fillWidth: true
+                        Layout.preferredHeight: width
+
+                        source: imageUrl ? imageUrl : ""
+                        fillMode: Image.PreserveAspectFit
+                    }
+
+                    RowLayout {
                         Layout.fillWidth: true
 
-                        text: infoValue
-                        font.pointSize: 12
-                        wrapMode: Text.WrapAtWordBoundaryOrAnywhere
-                    }
+                        Button {
+                            text: qsTr("Show")
+                            font.pointSize: 12
 
-                    Item {
-                        Layout.preferredWidth: 32
-                        Layout.preferredHeight: 32
-
-                        visible: folderPath !== ""
-
-                        Image {
-                            id: folderImage
-                            anchors.fill: parent
-                            source: "Images/folder-32.svg"
+                            onClicked: imageUrl = url
                         }
 
-                        ColorOverlay {
-                            anchors.fill: folderImage
-                            source: folderImage
-                            color: "black"
-                        }
+                        Button {
+                            text: qsTr("Fix")
+                            font.pointSize: 12
 
-                        MouseArea {
-                            anchors.fill: parent
-
-                            onClicked: openFileFolderPage(folderPath)
+                            onClicked: {
+                                let fileInfo = AppFramework.fileInfo(url);
+                                let bytes = fileInfo.readAll();
+                                let base64 = AppFramework.btoa(bytes);
+                                imageUrl = "data:" + fileInfo.type + ";base64," + base64;
+                            }
                         }
                     }
-
                 }
             }
         }
@@ -87,11 +148,17 @@ Page {
         id: listModel
 
         function appendInfo( infoLabel, infoValue, folderPath ) {
-            append( { infoLabel : infoLabel, infoValue: JSON.stringify( infoValue, undefined, 2 ), folderPath: folderPath || "" } );
+            append( {
+                       infoLabel : infoLabel,
+                       infoValue: JSON.stringify( infoValue, undefined, 2 ),
+                       folderPath: folderPath || ""
+                   } );
         }
     }
 
     function refresh() {
+        imageUrl = "";
+
         listModel.clear();
         listModel.appendInfo( "url", fileInfoPage.url );
         if (fileInfo.folder) {
@@ -106,6 +173,11 @@ Page {
         listModel.appendInfo( "size", fileInfo.size );
         listModel.appendInfo( "type", fileInfo.type );
         listModel.appendInfo( "extra", fileInfo.extra );
+
+        if (fileInfo.type.match(/image/)) {
+            imageUrl = url;
+        }
+
     }
 
     Component.onCompleted: {

@@ -144,20 +144,19 @@ FileFolder* FileInfoPrivateAndroid::folder() const
         return FileInfoPrivate::folder();
     }
 
+    QString parentUri;
     DocumentFile documentFile = DocumentFile::fromUri(env, url().toString());
-    if (!documentFile.isValid())
+    if (documentFile.isValid())
     {
-        return nullptr;
-    }
-
-    DocumentFile parentFile = documentFile.getParentFile();
-    if (!parentFile.isValid())
-    {
-        return nullptr;
+        DocumentFile parentFile = documentFile.getParentFile();
+        if (!parentFile.isValid())
+        {
+            parentUri = parentFile.getUri();
+        }
     }
 
     FileFolder* fileFolder = new FileFolder();
-    fileFolder->setPath(parentFile.getUri());
+    fileFolder->setPath(parentUri);
     QQmlEngine::setObjectOwnership(fileFolder, QQmlEngine::JavaScriptOwnership);
     return fileFolder;
 }
