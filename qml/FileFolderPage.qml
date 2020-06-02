@@ -46,21 +46,34 @@ Page {
             width: listView.width
             height: rowLayout.height
 
-            RowLayout {
+            ColumnLayout {
                 id: rowLayout
 
                 width: parent.width
 
-                Image {
-                    Layout.preferredWidth: 32
-                    Layout.preferredHeight: 32
+                RowLayout {
+                    Layout.fillWidth: true
 
-                    source: iconSource
+                    Image {
+                        Layout.preferredWidth: 32
+                        Layout.preferredHeight: 32
+
+                        source: iconSource
+                    }
+
+                    Text {
+                        Layout.fillWidth: true
+                        text: displayName
+                        font.pointSize: 14
+                        font.bold: true
+                        wrapMode: Text.WrapAtWordBoundaryOrAnywhere
+                    }
+
                 }
 
                 Text {
                     Layout.fillWidth: true
-                    text: displayName
+                    text: fileUrl
                     font.pointSize: 12
                     wrapMode: Text.WrapAtWordBoundaryOrAnywhere
                 }

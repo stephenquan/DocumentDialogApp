@@ -71,19 +71,7 @@ QString FileFolderPrivateAndroid::filePath(const QString& fileName) const
         return FileFolderPrivate::filePath(fileName);
     }
 
-    DocumentFile parentDocumentFile = DocumentFile::fromUri(env, url().toString());
-    if (!parentDocumentFile.isValid())
-    {
-        return QString();
-    }
-
-    DocumentFile documentFile = parentDocumentFile.findFile(fileName);
-    if (!documentFile.isValid())
-    {
-        return QString();
-    }
-
-    return documentFile.getUri();
+    return fileName;
 }
 
 //----------------------------------------------------------------------
@@ -100,19 +88,7 @@ QVariant FileFolderPrivateAndroid::fileUrl(const QString& fileName) const
         return FileFolderPrivate::filePath(fileName);
     }
 
-    DocumentFile parentDocumentFile = DocumentFile::fromUri(env, url().toString());
-    if (!parentDocumentFile.isValid())
-    {
-        return QVariant();
-    }
-
-    DocumentFile documentFile = parentDocumentFile.findFile(fileName);
-    if (!documentFile.isValid())
-    {
-        return QVariant();
-    }
-
-    return documentFile.getUri();
+    return fileName;
 }
 
 //----------------------------------------------------------------------
@@ -140,7 +116,7 @@ void FileFolderPrivateAndroid::names(QAndroidJniEnvironment& env, QStringList& e
         {
             if (files)
             {
-                entryList.append(documentFile.getName());
+                entryList.append(fileUri);
             }
         }
 
@@ -149,7 +125,7 @@ void FileFolderPrivateAndroid::names(QAndroidJniEnvironment& env, QStringList& e
         {
             if (!files)
             {
-                entryList.append(documentFile.getName());
+                entryList.append(fileUri);
             }
         }
     }

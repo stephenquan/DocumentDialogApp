@@ -115,8 +115,7 @@ QString FileInfoPrivateAndroid::fileName() const
         return FileInfoPrivate::fileName();
     }
 
-    DocumentFile documentFile = DocumentFile::fromUri(env, url().toString());
-    return documentFile.getName();
+    return url().toString();
 }
 
 //----------------------------------------------------------------------
@@ -130,7 +129,7 @@ QString FileInfoPrivateAndroid::filePath() const
         return FileInfoPrivate::filePath();
     }
 
-    return m_Url.toString();
+    return url().toString();
 }
 
 //----------------------------------------------------------------------
