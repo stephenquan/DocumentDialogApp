@@ -5,7 +5,6 @@
 #include "DocumentDialogPrivateAndroid.h"
 #include <QtAndroid>
 #include <QAndroidJniEnvironment>
-#include <QDebug>
 #include "JniExceptionCheck.h"
 
 //----------------------------------------------------------------------

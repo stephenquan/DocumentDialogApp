@@ -5,7 +5,6 @@
 
 #include <QQmlEngine>
 #include <QRegExp>
-#include <QDebug>
 
 #include "FileFolderPrivate.h"
 #include "FileFolder.h"
@@ -212,6 +211,24 @@ qint64 FileInfoPrivateAndroid::size() const
 
     DocumentFile documentFile = DocumentFile::fromUri(env, url().toString());
     return documentFile.length();
+}
+
+//----------------------------------------------------------------------
+//
+//----------------------------------------------------------------------
+
+QString FileInfoPrivateAndroid::type() const
+{
+    QAndroidJniEnvironment env;
+
+    if (!ContentUris::isContentUri(url().toString()))
+    {
+        return FileInfoPrivate::type();
+    }
+
+    DocumentFile documentFile = DocumentFile::fromUri(env, url().toString());
+    QString _type = documentFile.getType();
+    return _type;
 }
 
 //----------------------------------------------------------------------

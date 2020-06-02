@@ -20,7 +20,6 @@ SOURCES += \
     DocumentDialogPrivate.cpp \
     FileFolder.cpp \
     FileFolderPrivate.cpp \
-    FileFolderPrivateAndroid.cpp \
     FileInfo.cpp \
     FileInfoPrivate.cpp \
     main.cpp
@@ -31,10 +30,8 @@ HEADERS += \
     DocumentDialogPrivate.h \
     FileFolder.h \
     FileFolderPrivate.h \
-    FileFolderPrivateAndroid.h \
     FileInfo.h \
-    FileInfoPrivate.h \ \
-    JniExceptionCheck.h
+    FileInfoPrivate.h
 
 android: {
     QT += androidextras
@@ -47,6 +44,7 @@ android: {
         DocumentFile.cpp \
         DocumentsContract.cpp \
         DocumentsContractDocument.cpp \
+        FileFolderPrivateAndroid.cpp \
         FileInfoPrivateAndroid.cpp \
         InputStream.cpp
 
@@ -58,8 +56,10 @@ android: {
         DocumentFile.h \
         DocumentsContract.h \
         DocumentsContractDocument.h \
+        FileFolderPrivateAndroid.h \
         FileInfoPrivateAndroid.h \
-        InputStream.h
+        InputStream.h \
+        JniExceptionCheck.h
 
 }
 

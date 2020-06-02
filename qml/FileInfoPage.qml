@@ -104,6 +104,7 @@ Page {
         listModel.appendInfo( "fileName", fileInfo.fileName );
         listModel.appendInfo( "filePath", fileInfo.filePath );
         listModel.appendInfo( "size", fileInfo.size );
+        listModel.appendInfo( "type", fileInfo.type );
         listModel.appendInfo( "extra", fileInfo.extra );
     }
 

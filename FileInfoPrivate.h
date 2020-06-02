@@ -43,6 +43,7 @@ public:
     virtual bool isDir() const;
     virtual QByteArray readAll() const;
     virtual qint64 size() const;
+    virtual QString type() const;
     virtual QVariant extra() const;
 
     virtual QVariant url() const { return m_Url; }

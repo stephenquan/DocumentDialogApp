@@ -39,6 +39,7 @@ class FileInfo : public QObject
     Q_PROPERTY(bool isFile READ isFile NOTIFY fileInfoChanged)
     Q_PROPERTY(bool isDir READ isDir NOTIFY fileInfoChanged)
     Q_PROPERTY(qint64 size READ size NOTIFY fileInfoChanged)
+    Q_PROPERTY(QString type READ type NOTIFY fileInfoChanged)
     Q_PROPERTY(QVariant url READ url WRITE setUrl NOTIFY fileInfoChanged)
     Q_PROPERTY(QVariant extra READ extra NOTIFY fileInfoChanged)
 
@@ -64,6 +65,7 @@ public:
     bool isFile() const;
     bool isDir() const;
     qint64 size() const;
+    QString type() const;
     QVariant extra() const;
 
     QVariant url() const;

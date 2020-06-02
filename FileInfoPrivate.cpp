@@ -6,6 +6,7 @@
 #include <QFileInfo>
 #include <QDir>
 #include <QQmlEngine>
+#include <QMimeDatabase>
 #include "FileFolder.h"
 #include "FileInfoPrivate.h"
 
@@ -132,6 +133,17 @@ QByteArray FileInfoPrivate::readAll() const
 qint64 FileInfoPrivate::size() const
 {
     return fileInfo().size();
+}
+
+//----------------------------------------------------------------------
+//
+//----------------------------------------------------------------------
+
+QString FileInfoPrivate::type() const
+{
+    QMimeDatabase db;
+    QMimeType mime = db.mimeTypeForFile(fileName());
+    return mime.name();
 }
 
 //----------------------------------------------------------------------

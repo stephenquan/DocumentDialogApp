@@ -140,6 +140,15 @@ qint64 FileInfo::size() const
 //
 //----------------------------------------------------------------------
 
+QString FileInfo::type() const
+{
+    return m_FileInfoPrivate->type();
+}
+
+//----------------------------------------------------------------------
+//
+//----------------------------------------------------------------------
+
 QVariant FileInfo::url() const
 {
     return m_FileInfoPrivate->url();

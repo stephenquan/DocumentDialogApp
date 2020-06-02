@@ -36,6 +36,7 @@ public:
     virtual bool isFile() const Q_DECL_OVERRIDE;
     virtual bool isDir() const Q_DECL_OVERRIDE;
     virtual qint64 size() const Q_DECL_OVERRIDE;
+    virtual QString type() const Q_DECL_OVERRIDE;
     virtual QByteArray readAll() const Q_DECL_OVERRIDE;
     virtual QVariant extra() const Q_DECL_OVERRIDE;
 
