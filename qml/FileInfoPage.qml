@@ -2,6 +2,7 @@ import QtQuick 2.12
 import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.12
 import QtGraphicalEffects 1.0
+import QtMultimedia 5.12
 import StephenQuan 1.0
 
 Page {
@@ -9,6 +10,8 @@ Page {
 
     property var url
     property var imageUrl
+    property var videoUrl
+    property var audioUrl
 
     onUrlChanged: refresh()
 
@@ -104,7 +107,7 @@ Page {
                         id: image
 
                         Layout.fillWidth: true
-                        Layout.preferredHeight: width
+                        Layout.preferredHeight: width / 2
 
                         source: imageUrl ? imageUrl : ""
                         fillMode: Image.PreserveAspectFit
@@ -134,6 +137,163 @@ Page {
                     }
                 }
             }
+
+            Frame {
+                visible: videoUrl
+
+                Layout.fillWidth: true
+
+                ColumnLayout {
+                    width: parent.width
+
+                    Text {
+                        text: qsTr("video")
+                        font.pointSize: 12
+                        font.bold: true
+                    }
+
+                    Video {
+                        id: video
+
+                        Layout.fillWidth: true
+                        Layout.preferredHeight: width / 2
+
+                        source: videoUrl ? videoUrl : ""
+                    }
+
+                    Flow {
+                        Layout.fillWidth: true
+
+                        spacing: 10
+
+                        Button {
+                            text: qsTr("Show")
+                            font.pointSize: 12
+
+                            onClicked: videoUrl = url
+                        }
+
+                        Button {
+                            text: qsTr("Rewind")
+                            font.pointSize: 12
+
+                            onClicked: video.seek(0)
+                        }
+
+                        Button {
+                            text: qsTr("Play")
+                            font.pointSize: 12
+
+                            onClicked: video.play()
+                        }
+
+                        Button {
+                            text: qsTr("Pause")
+                            font.pointSize: 12
+
+                            onClicked: video.pause()
+                        }
+
+                        Button {
+                            text: qsTr("Stop")
+                            font.pointSize: 12
+
+                            onClicked: video.stop()
+                        }
+
+                        Button {
+                            text: qsTr("Fix")
+                            font.pointSize: 12
+
+                            onClicked: {
+                                let fileInfo = AppFramework.fileInfo(url);
+                                let bytes = fileInfo.readAll();
+                                let base64 = AppFramework.btoa(bytes);
+                                videoUrl = "data:" + fileInfo.type + ";base64," + base64;
+                            }
+                        }
+                    }
+                }
+            }
+
+            Frame {
+                visible: audioUrl
+
+                Layout.fillWidth: true
+
+                ColumnLayout {
+                    width: parent.width
+
+                    Text {
+                        text: qsTr("audio")
+                        font.pointSize: 12
+                        font.bold: true
+                    }
+
+                    Audio {
+                        id: audio
+
+                        Layout.fillWidth: true
+                        Layout.preferredHeight: width / 2
+
+                        source: audioUrl ? audioUrl : ""
+                    }
+
+                    Flow {
+                        Layout.fillWidth: true
+
+                        spacing: 10
+
+                        Button {
+                            text: qsTr("Show")
+                            font.pointSize: 12
+
+                            onClicked: audioUrl = url
+                        }
+
+                        Button {
+                            text: qsTr("Rewind")
+                            font.pointSize: 12
+
+                            onClicked: audio.seek(0)
+                        }
+
+                        Button {
+                            text: qsTr("Play")
+                            font.pointSize: 12
+
+                            onClicked: audio.play()
+                        }
+
+                        Button {
+                            text: qsTr("Pause")
+                            font.pointSize: 12
+
+                            onClicked: audio.pause()
+                        }
+
+                        Button {
+                            text: qsTr("Stop")
+                            font.pointSize: 12
+
+                            onClicked: audio.stop()
+                        }
+
+                        Button {
+                            text: qsTr("Fix")
+                            font.pointSize: 12
+
+                            onClicked: {
+                                let fileInfo = AppFramework.fileInfo(url);
+                                let bytes = fileInfo.readAll();
+                                let base64 = AppFramework.btoa(bytes);
+                                audioUrl = "data:" + fileInfo.type + ";base64," + base64;
+                            }
+                        }
+                    }
+                }
+            }
+
         }
 
     }
@@ -158,6 +318,8 @@ Page {
 
     function refresh() {
         imageUrl = "";
+        videoUrl = "";
+        audioUrl = "";
 
         listModel.clear();
         listModel.appendInfo( "url", fileInfoPage.url );
@@ -174,10 +336,17 @@ Page {
         listModel.appendInfo( "type", fileInfo.type );
         listModel.appendInfo( "extra", fileInfo.extra );
 
-        if (fileInfo.type.match(/image/)) {
+        if (fileInfo.type.match(/^image\//)) {
             imageUrl = url;
         }
 
+        if (fileInfo.type.match(/^video\//)) {
+            videoUrl = url;
+        }
+
+        if (fileInfo.type.match(/^audio\//)) {
+            audioUrl = url;
+        }
     }
 
     Component.onCompleted: {

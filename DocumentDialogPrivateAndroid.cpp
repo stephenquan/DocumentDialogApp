@@ -57,10 +57,12 @@ void DocumentDialogPrivateAndroid::open()
 //----------------------------------------------------------------------
 
 void DocumentDialogPrivateAndroid::handleActivityResult(int receiverRequestCode, int resultCode, const QAndroidJniObject &data)
-{ QAndroidJniEnvironment env;
+{
+    QAndroidJniEnvironment env;
     JniExceptionCheck check(env);
 
-    qCInfo(documentDialog, "receiverRequestCode: %d resultCode: %d", receiverRequestCode, resultCode);
+    qCInfo(documentDialog, "receiverRequestCode: %d", receiverRequestCode);
+    qCInfo(documentDialog, "resultCode: %d", receiverRequestCode);
 
     jint RESULT_OK = QAndroidJniObject::getStaticField<jint>("android/app/Activity", "RESULT_OK");
     //jint RESULT_CANCELED = QAndroidJniObject::getStaticField<jint>("android/app/Activity", "RESULT_CANCELED");
@@ -82,7 +84,7 @@ void DocumentDialogPrivateAndroid::handleActivityResult(int receiverRequestCode,
     }
 
     QAndroidJniObject uri = data.callObjectMethod("getData", "()Landroid/net/Uri;" );
-    qCInfo(documentDialog, "uri = %s", uri.toString().toUtf8().constData());
+    qCInfo(documentDialog, "uri: %s", uri.toString().toUtf8().constData());
 
     //setFileUrl(fileUrl);
     setFileUrl(uri.toString());
