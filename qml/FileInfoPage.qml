@@ -10,8 +10,7 @@ Page {
 
     property var url
     property var imageUrl
-    property var videoUrl
-    property var audioUrl
+    property var mediaPlayerUrl
 
     onUrlChanged: refresh()
 
@@ -139,7 +138,7 @@ Page {
             }
 
             Frame {
-                visible: videoUrl
+                visible: mediaPlayerUrl
 
                 Layout.fillWidth: true
 
@@ -147,18 +146,42 @@ Page {
                     width: parent.width
 
                     Text {
-                        text: qsTr("video")
+                        text: qsTr("MediaPlayer")
                         font.pointSize: 12
                         font.bold: true
                     }
 
-                    Video {
-                        id: video
-
+                    Item {
                         Layout.fillWidth: true
                         Layout.preferredHeight: width / 2
 
-                        source: videoUrl ? videoUrl : ""
+                        MediaPlayer {
+                            id: mediaPlayer
+
+                            source: mediaPlayerUrl ? mediaPlayerUrl : ""
+                        }
+                    }
+
+                    RowLayout {
+                        Layout.fillWidth: true
+
+                        Text {
+                            text: qsTr("%1 (Status: %2)")
+                            .arg(mediaPlayerStatus.stringify(mediaPlayer.status) || "NULL")
+                            .arg(mediaPlayer.status)
+                            font.pointSize: 10
+                        }
+
+                        Item {
+                            Layout.fillWidth: true
+                        }
+
+                        Text {
+                            text: qsTr("%1/%2")
+                            .arg(Math.floor(mediaPlayer.position / 1000))
+                            .arg(Math.floor(mediaPlayer.duration / 1000))
+                            font.pointSize: 10
+                        }
                     }
 
                     Flow {
@@ -170,35 +193,35 @@ Page {
                             text: qsTr("Show")
                             font.pointSize: 12
 
-                            onClicked: videoUrl = url
+                            onClicked: mediaPlayerUrl = url
                         }
 
                         Button {
                             text: qsTr("Rewind")
                             font.pointSize: 12
 
-                            onClicked: video.seek(0)
+                            onClicked: mediaPlayer.seek(0)
                         }
 
                         Button {
                             text: qsTr("Play")
                             font.pointSize: 12
 
-                            onClicked: video.play()
+                            onClicked: mediaPlayer.play()
                         }
 
                         Button {
                             text: qsTr("Pause")
                             font.pointSize: 12
 
-                            onClicked: video.pause()
+                            onClicked: mediaPlayer.pause()
                         }
 
                         Button {
                             text: qsTr("Stop")
                             font.pointSize: 12
 
-                            onClicked: video.stop()
+                            onClicked: mediaPlayer.stop()
                         }
 
                         Button {
@@ -209,85 +232,8 @@ Page {
                                 let fileInfo = AppFramework.fileInfo(url);
                                 let bytes = fileInfo.readAll();
                                 let base64 = AppFramework.btoa(bytes);
-                                videoUrl = "data:" + fileInfo.type + ";base64," + base64;
-                            }
-                        }
-                    }
-                }
-            }
-
-            Frame {
-                visible: audioUrl
-
-                Layout.fillWidth: true
-
-                ColumnLayout {
-                    width: parent.width
-
-                    Text {
-                        text: qsTr("audio")
-                        font.pointSize: 12
-                        font.bold: true
-                    }
-
-                    Audio {
-                        id: audio
-
-                        Layout.fillWidth: true
-                        Layout.preferredHeight: width / 2
-
-                        source: audioUrl ? audioUrl : ""
-                    }
-
-                    Flow {
-                        Layout.fillWidth: true
-
-                        spacing: 10
-
-                        Button {
-                            text: qsTr("Show")
-                            font.pointSize: 12
-
-                            onClicked: audioUrl = url
-                        }
-
-                        Button {
-                            text: qsTr("Rewind")
-                            font.pointSize: 12
-
-                            onClicked: audio.seek(0)
-                        }
-
-                        Button {
-                            text: qsTr("Play")
-                            font.pointSize: 12
-
-                            onClicked: audio.play()
-                        }
-
-                        Button {
-                            text: qsTr("Pause")
-                            font.pointSize: 12
-
-                            onClicked: audio.pause()
-                        }
-
-                        Button {
-                            text: qsTr("Stop")
-                            font.pointSize: 12
-
-                            onClicked: audio.stop()
-                        }
-
-                        Button {
-                            text: qsTr("Fix")
-                            font.pointSize: 12
-
-                            onClicked: {
-                                let fileInfo = AppFramework.fileInfo(url);
-                                let bytes = fileInfo.readAll();
-                                let base64 = AppFramework.btoa(bytes);
-                                audioUrl = "data:" + fileInfo.type + ";base64," + base64;
+                                mediaPlayerUrl = "data:" + fileInfo.type + ";base64," + base64;
+                                console.log(mediaPlayerUrl);
                             }
                         }
                     }
@@ -317,12 +263,15 @@ Page {
     }
 
     function refresh() {
-        imageUrl = "";
-        videoUrl = "";
-        audioUrl = "";
+        imageUrl = null;
+        mediaPlayerUrl = null;
 
         listModel.clear();
-        listModel.appendInfo( "url", fileInfoPage.url );
+        if (!url) {
+            return;
+        }
+
+        listModel.appendInfo( "url", url );
         if (fileInfo.folder) {
             listModel.appendInfo( "folder.path", fileInfo.folder.path, fileInfo.folder.path );
         }
@@ -341,16 +290,25 @@ Page {
         }
 
         if (fileInfo.type.match(/^video\//)) {
-            videoUrl = url;
+            mediaPlayerUrl = url;
         }
 
         if (fileInfo.type.match(/^audio\//)) {
-            audioUrl = url;
+            mediaPlayerUrl = url;
         }
+    }
+
+    EnumInfo {
+        id: mediaPlayerStatus
+
+        context: mediaPlayer
+        name: "Status"
+
     }
 
     Component.onCompleted: {
         Qt.callLater( refresh );
+        console.log(JSON.stringify(mediaPlayerStatus.availableNames));
     }
 
 }

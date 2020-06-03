@@ -1,6 +1,7 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include "DocumentDialog.h"
+#include "EnumInfo.h"
 #include "FileInfo.h"
 #include "FileFolder.h"
 #include "AppFramework.h"
@@ -15,6 +16,7 @@ int main(int argc, char *argv[])
     QGuiApplication app(argc, argv);
 
     qmlRegisterType<DocumentDialog>("StephenQuan", 1, 0, "DocumentDialog");
+    qmlRegisterType<EnumInfo>("StephenQuan", 1, 0, "EnumInfo");
     qmlRegisterType<FileInfo>("StephenQuan", 1, 0, "FileInfo");
     qmlRegisterType<FileFolder>("StephenQuan", 1, 0, "FileFolder");
     qmlRegisterSingletonType<AppFramework>("StephenQuan", 1, 0, "AppFramework", AppFramework::singletonProvider);

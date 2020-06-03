@@ -19,6 +19,7 @@ SOURCES += \
     AppFramework.cpp \
     DocumentDialog.cpp \
     DocumentDialogPrivate.cpp \
+    EnumInfo.cpp \
     FileFolder.cpp \
     FileFolderPrivate.cpp \
     FileInfo.cpp \
@@ -29,6 +30,7 @@ HEADERS += \
     AppFramework.h \
     DocumentDialog.h \
     DocumentDialogPrivate.h \
+    EnumInfo.h \
     FileFolder.h \
     FileFolderPrivate.h \
     FileInfo.h \
