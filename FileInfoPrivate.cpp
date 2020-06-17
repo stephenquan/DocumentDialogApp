@@ -98,6 +98,15 @@ QString FileInfoPrivate::filePath() const
 //
 //----------------------------------------------------------------------
 
+QString FileInfoPrivate::path() const
+{
+    return fileInfo().path();
+}
+
+//----------------------------------------------------------------------
+//
+//----------------------------------------------------------------------
+
 bool FileInfoPrivate::isFile() const
 {
     return fileInfo().isFile();
@@ -217,6 +226,15 @@ QFileInfo FileInfoPrivate::fileInfo(const QUrl& fileUrl)
 QFileInfo FileInfoPrivate::fileInfo(const QString& filePath)
 {
     return QFileInfo(filePath);
+}
+
+//----------------------------------------------------------------------
+//
+//----------------------------------------------------------------------
+
+QDateTime FileInfoPrivate::lastModified() const
+{
+    return fileInfo().lastModified();
 }
 
 //----------------------------------------------------------------------

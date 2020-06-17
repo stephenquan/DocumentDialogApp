@@ -405,7 +405,7 @@ qint64 DocumentFile::lastModified() const
         return false;
     }
 
-    jlong result = callMethod<jboolean>(
+    jlong result = callMethod<jlong>(
                 "lastModified",
                 "()J"
                 );

@@ -12,6 +12,7 @@
 #include <QObject>
 #include <QVariant>
 #include <QFile>
+#include <QDateTime>
 #include <QUrl>
 
 //----------------------------------------------------------------------
@@ -36,11 +37,13 @@ class FileInfo : public QObject
     Q_PROPERTY(QString displayName READ displayName NOTIFY fileInfoChanged)
     Q_PROPERTY(QString fileName READ fileName NOTIFY fileInfoChanged)
     Q_PROPERTY(QString filePath READ filePath NOTIFY fileInfoChanged)
+    Q_PROPERTY(QString path READ path NOTIFY fileInfoChanged)
     Q_PROPERTY(bool isFile READ isFile NOTIFY fileInfoChanged)
     Q_PROPERTY(bool isDir READ isDir NOTIFY fileInfoChanged)
     Q_PROPERTY(qint64 size READ size NOTIFY fileInfoChanged)
     Q_PROPERTY(QString type READ type NOTIFY fileInfoChanged)
     Q_PROPERTY(QVariant url READ url WRITE setUrl NOTIFY fileInfoChanged)
+    Q_PROPERTY(QDateTime lastModified READ lastModified NOTIFY fileInfoChanged)
     Q_PROPERTY(QVariant extra READ extra NOTIFY fileInfoChanged)
 
 public:
@@ -62,10 +65,12 @@ public:
     QString displayName() const;
     QString fileName() const;
     QString filePath() const;
+    QString path() const;
     bool isFile() const;
     bool isDir() const;
     qint64 size() const;
     QString type() const;
+    QDateTime lastModified() const;
     QVariant extra() const;
 
     QVariant url() const;

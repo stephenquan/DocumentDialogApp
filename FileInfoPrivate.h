@@ -12,6 +12,7 @@
 #include <QObject>
 #include <QVariant>
 #include <QFileInfo>
+#include <QDateTime>
 #include <QUrl>
 
 //----------------------------------------------------------------------
@@ -39,11 +40,13 @@ public:
     virtual QString displayName() const;
     virtual QString fileName() const;
     virtual QString filePath() const;
+    virtual QString path() const;
     virtual bool isFile() const;
     virtual bool isDir() const;
     virtual QByteArray readAll() const;
     virtual qint64 size() const;
     virtual QString type() const;
+    virtual QDateTime lastModified() const;
     virtual QVariant extra() const;
 
     virtual QVariant url() const { return m_Url; }

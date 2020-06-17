@@ -113,6 +113,15 @@ QString FileInfo::filePath() const
 //
 //----------------------------------------------------------------------
 
+QString FileInfo::path() const
+{
+    return m_FileInfoPrivate->path();
+}
+
+//----------------------------------------------------------------------
+//
+//----------------------------------------------------------------------
+
 bool FileInfo::isFile() const
 {
     return m_FileInfoPrivate->isFile();
@@ -185,6 +194,15 @@ QVariant FileInfo::dataUri() const
     }
 
     return QStringLiteral("data:application/octet-stream;base64,") + bytes.toBase64();
+}
+
+//----------------------------------------------------------------------
+//
+//----------------------------------------------------------------------
+
+QDateTime FileInfo::lastModified() const
+{
+    return m_FileInfoPrivate->lastModified();
 }
 
 //----------------------------------------------------------------------

@@ -32,12 +32,14 @@ public:
     virtual bool exists() const Q_DECL_OVERRIDE;
     virtual QString fileName() const Q_DECL_OVERRIDE;
     virtual QString filePath() const Q_DECL_OVERRIDE;
+    virtual QString path() const Q_DECL_OVERRIDE;
     virtual FileFolder* folder() const Q_DECL_OVERRIDE;
     virtual bool isFile() const Q_DECL_OVERRIDE;
     virtual bool isDir() const Q_DECL_OVERRIDE;
     virtual qint64 size() const Q_DECL_OVERRIDE;
     virtual QString type() const Q_DECL_OVERRIDE;
     virtual QByteArray readAll() const Q_DECL_OVERRIDE;
+    virtual QDateTime lastModified() const Q_DECL_OVERRIDE;
     virtual QVariant extra() const Q_DECL_OVERRIDE;
 
     virtual void setUrl(const QVariant& url) Q_DECL_OVERRIDE;

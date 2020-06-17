@@ -135,6 +135,35 @@ QString FileInfoPrivateAndroid::filePath() const
 //
 //----------------------------------------------------------------------
 
+QString FileInfoPrivateAndroid::path() const
+{
+    QAndroidJniEnvironment env;
+
+    if (!ContentUris::isContentUri(url().toString()))
+    {
+        return FileInfoPrivate::path();
+    }
+
+    QString parentUri;
+    DocumentFile documentFile = DocumentFile::fromUri(env, url().toString());
+    if (!documentFile.isValid())
+    {
+        return QString();
+    }
+
+    DocumentFile parentFile = documentFile.getParentFile();
+    if (!parentFile.isValid())
+    {
+        return QString();
+    }
+
+    return parentFile.getUri();
+}
+
+//----------------------------------------------------------------------
+//
+//----------------------------------------------------------------------
+
 FileFolder* FileInfoPrivateAndroid::folder() const
 {
     QAndroidJniEnvironment env;
@@ -293,6 +322,24 @@ void FileInfoPrivateAndroid::setUrl(const QVariant& url)
     */
 
     FileInfoPrivate::setUrl(_url);
+}
+
+//----------------------------------------------------------------------
+//
+//----------------------------------------------------------------------
+
+QDateTime FileInfoPrivateAndroid::lastModified() const
+{
+    QAndroidJniEnvironment env;
+
+    if (!ContentUris::isContentUri(url().toString()))
+    {
+        return FileInfoPrivate::lastModified();
+    }
+
+    DocumentFile documentFile = DocumentFile::fromUri(env, url().toString());
+    qint64 lastModified = documentFile.lastModified();
+    return QDateTime::fromMSecsSinceEpoch(lastModified);
 }
 
 //----------------------------------------------------------------------
