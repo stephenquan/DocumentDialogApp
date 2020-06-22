@@ -114,7 +114,8 @@ QString FileInfoPrivateAndroid::fileName() const
         return FileInfoPrivate::fileName();
     }
 
-    return url().toString();
+    DocumentFile documentFile = DocumentFile::fromUri(env, url().toString());
+    return documentFile.getName();
 }
 
 //----------------------------------------------------------------------
